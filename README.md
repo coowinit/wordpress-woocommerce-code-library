@@ -4,16 +4,9 @@
 
 ## 在线预览
 
-上传到 GitHub 后，可以通过 GitHub Pages 预览 `index.html` 页面。
+点击下面链接，可以直接预览在线代码片段查询页面：
 
-建议设置方式：
-
-1. 打开 GitHub 仓库。
-2. 进入 `Settings`。
-3. 找到 `Pages`。
-4. Source 选择 `Deploy from a branch`。
-5. Branch 选择 `main`，目录选择 `/root`。
-6. 保存后等待 GitHub 生成预览地址。
+[点击预览 WordPress / WooCommerce 商城代码片段知识库](https://coowinit.github.io/wordpress-woocommerce-code-library/)
 
 ## 文件结构
 
@@ -161,41 +154,6 @@ $db_name = 'your_database_name';
 $db_user = 'your_database_user';
 $db_password = 'your_database_password';
 $admin_email = 'company@example.com';
-```
-
-## 推荐仓库信息
-
-仓库名称：
-
-```text
-wordpress-woocommerce-code-library
-```
-
-中文标题：
-
-```text
-WordPress / WooCommerce 商城代码片段知识库
-```
-
-仓库描述：
-
-```text
-用于整理 WordPress、WooCommerce 商城搭建、维护、安全排查和功能修改过程中常用的重要代码片段，方便后续查阅、复制和复用。
-```
-
-Topics：
-
-```text
-wordpress
-woocommerce
-php
-sql
-javascript
-css
-elementor
-code-snippets
-github-pages
-website-maintenance
 ```
 
 ## 更新记录
