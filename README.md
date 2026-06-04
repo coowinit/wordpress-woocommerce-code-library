@@ -16,7 +16,8 @@ wordpress-woocommerce-code-library/
 ├── README.md
 ├── docs/
 │   ├── woocommerce-theme-core-knowledge-v1.0.1.md
-│   └── wordpress-theme-plugin-reusable-code-v1.0.2.md
+│   ├── wordpress-theme-plugin-reusable-code-v1.0.2.md
+│   └── wordpress-practical-snippets-v1.0.3.md
 └── assets/
     ├── css/
     │   └── style.css
@@ -40,6 +41,7 @@ wordpress-woocommerce-code-library/
 - WordPress 基础
 - WooCommerce 商城
 - 主题 / 插件架构
+- 高频函数 / 救急代码
 - Elementor
 - 表单 / 邮件
 - 数据库 SQL
@@ -65,6 +67,29 @@ wordpress-woocommerce-code-library/
 详细文档：
 
 [查看 Woo 商城主题核心知识点整理](docs/woocommerce-theme-core-knowledge-v1.0.1.md)
+
+
+## v1.0.3 核心文档
+
+本版本新增 WordPress 高频救急代码、模板标签、查询逻辑和常用开发片段整理，主要用于日常维护和快速复用。
+
+主要整理内容：
+
+- 忘记管理员密码时，通过 FTP 临时修改 `functions.php` 新增管理员账号的救急方法
+- 禁用 WordPress 自动生成图片尺寸和大图缩放的修正版代码
+- 面包屑导航：插件 / WordPress 7.0 后推荐方式，以及自定义核心逻辑
+- 分页代码：`the_posts_pagination()` 内置函数与自定义 `WP_Query` 分页
+- 自定义内容类型和分类法：插件方式与 `functions.php` 代码方式
+- 常用模板标签：`get_template_part()`、`single_cat_title()`、`get_queried_object()` 等
+- `WP_Query` 与 `tax_query` 高频查询写法
+- `wp_tag_cloud()`、`get_theme_file_uri()`、缩略图、标签和分页相关函数
+- `$.ajax()` 表单提交示例和 WordPress Ajax 后端处理方式
+- `<script data-nowprocket>` 与 `script_loader_tag` 的使用场景
+- 插件开发常用的 `add_action()`、`add_filter()`、`register_activation_hook()`、`add_shortcode()`
+
+详细文档：
+
+[查看 WordPress 高频救急代码与模板标签速查](docs/wordpress-practical-snippets-v1.0.3.md)
 
 ## v1.0.2 核心文档
 
@@ -152,6 +177,7 @@ wordpress-woocommerce-code-library/
 | WordPress 基础 | `wordpress` |
 | WooCommerce 商城 | `woocommerce` |
 | 主题 / 插件架构 | `theme` |
+| 高频函数 / 救急代码 | `common` |
 | Elementor | `elementor` |
 | 表单 / 邮件 | `form` |
 | 数据库 SQL | `database` |
@@ -200,6 +226,20 @@ $admin_email = 'company@example.com';
 ```
 
 ## 更新记录
+
+### v1.0.3
+
+- 新增 WordPress 高频救急代码与模板标签速查文档。
+- 新增 `docs/wordpress-practical-snippets-v1.0.3.md` 详细文档。
+- 补充忘记管理员密码时通过 `functions.php` 临时新增管理员账号的救急代码，并标记为高风险操作。
+- 修正并整理禁用 WordPress 自动生成图片尺寸、大图缩放和自定义图片尺寸的代码。
+- 补充面包屑导航的插件兼容写法和自定义核心逻辑。
+- 补充分页代码：内置分页函数和自定义 `WP_Query` 分页写法。
+- 补充自定义内容类型和分类法的插件方式与代码方式。
+- 整理必须牢记的模板标签、`WP_Query`、`tax_query`、缩略图、标签云、主题资源路径等高频函数。
+- 补充 `$.ajax()` 表单提交、WordPress Ajax 后端处理和 Nonce 校验示例。
+- 补充 `<script data-nowprocket>` 与 `script_loader_tag` 给脚本添加属性的用法。
+- 补充插件开发常用的 4 类代码：`add_action()`、`add_filter()`、`register_activation_hook()`、`add_shortcode()`。
 
 ### v1.0.2
 

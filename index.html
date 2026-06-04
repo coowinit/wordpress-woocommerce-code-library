@@ -21,6 +21,7 @@
         <a class="button button-light" href="README.md">查看 README</a>
         <a class="button button-light" href="docs/woocommerce-theme-core-knowledge-v1.0.1.md">Woo 主题知识点</a>
         <a class="button button-light" href="docs/wordpress-theme-plugin-reusable-code-v1.0.2.md">常用主题代码</a>
+        <a class="button button-light" href="docs/wordpress-practical-snippets-v1.0.3.md">高频函数速查</a>
         <a class="button button-primary" href="#code-list">浏览代码</a>
       </div>
     </div>
@@ -34,6 +35,7 @@
         <button class="filter-btn" data-filter="wordpress">WordPress 基础</button>
         <button class="filter-btn" data-filter="woocommerce">WooCommerce 商城</button>
         <button class="filter-btn" data-filter="theme">主题 / 插件架构</button>
+        <button class="filter-btn" data-filter="common">高频函数 / 救急代码</button>
         <button class="filter-btn" data-filter="elementor">Elementor</button>
         <button class="filter-btn" data-filter="form">表单 / 邮件</button>
         <button class="filter-btn" data-filter="database">数据库 SQL</button>
@@ -75,9 +77,10 @@
         <p>
           本页面适合上传到 GitHub Pages 作为在线查询页。新增代码时，建议统一记录：
           <strong>适用场景、适用文件、代码类型、风险等级、更新时间、标签和注意事项</strong>。
-          v1.0.1 已补充 Woo 商城主题核心知识点；v1.0.2 已补充普通 WordPress 主题与小插件的常用可复用代码。详细文档见
+          v1.0.1 已补充 Woo 商城主题核心知识点；v1.0.2 已补充普通 WordPress 主题与小插件的常用可复用代码；v1.0.3 已补充高频救急代码、模板标签和查询逻辑。详细文档见
           <a href="docs/woocommerce-theme-core-knowledge-v1.0.1.md"><strong>Woo 商城主题核心知识点整理</strong></a>、
-          <a href="docs/wordpress-theme-plugin-reusable-code-v1.0.2.md"><strong>WordPress 常用主题与小插件可复用代码整理</strong></a>。
+          <a href="docs/wordpress-theme-plugin-reusable-code-v1.0.2.md"><strong>WordPress 常用主题与小插件可复用代码整理</strong></a>、
+          <a href="docs/wordpress-practical-snippets-v1.0.3.md"><strong>WordPress 高频救急代码与模板标签速查</strong></a>。
         </p>
         <p class="warning-text">
           公开仓库中不要保存数据库密码、后台账号、API Key、插件授权码、客户邮箱、服务器 IP 等敏感信息。
@@ -85,6 +88,596 @@
       </section>
 
       <section id="code-list" class="code-list">
+
+        <!-- v1.0.3：[Recovery] 忘记管理员密码时临时新增管理员账号 -->
+        <article class="code-card" data-category="common" data-tags="wordpress recovery admin password ftp functions.php wp_create_user WP_User set_role 管理员 密码 找回 救急">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">高频函数 / 救急代码</p>
+              <h2>[Recovery] 忘记管理员密码时临时新增管理员账号</h2>
+            </div>
+            <span class="risk risk-high">高风险</span>
+          </div>
+
+          <p class="desc">
+            仅限自有网站后台无法登录时的临时救急方法。通过 FTP 修改 <code>functions.php</code>，创建临时管理员账号。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用文件：</strong>functions.php</li>
+            <li><strong>代码类型：</strong>PHP</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>管理员恢复 / wp_create_user / 高风险</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>PHP</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-php">function coowin_create_temp_admin_account() {
+    $user  = &#x27;temp_recovery_admin&#x27;;
+    $pass  = &#x27;CHANGE_THIS_TO_A_STRONG_PASSWORD&#x27;;
+    $email = &#x27;temp-admin@example.com&#x27;;
+
+    if ( username_exists( $user ) || email_exists( $email ) ) {
+        return;
+    }
+
+    $user_id = wp_create_user( $user, $pass, $email );
+
+    if ( is_wp_error( $user_id ) ) {
+        return;
+    }
+
+    $wp_user = new WP_User( $user_id );
+    $wp_user-&gt;set_role( &#x27;administrator&#x27; );
+}
+add_action( &#x27;init&#x27;, &#x27;coowin_create_temp_admin_account&#x27; );</code></pre>
+
+          <div class="note danger">
+            登录成功后必须立即删除这段代码，并删除临时账号或修改为正式安全账号。公开仓库中不要保存真实用户名、密码和邮箱。
+          </div>
+        </article>
+
+        <!-- v1.0.3：[Media] 禁用 WordPress 自动生成图片尺寸 -->
+        <article class="code-card" data-category="common" data-tags="wordpress media image sizes thumbnail medium large 1536 2048 big_image_size_threshold remove_image_size 图片 尺寸 缩略图">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">高频函数 / 救急代码</p>
+              <h2>[Media] 禁用 WordPress 自动生成图片尺寸</h2>
+            </div>
+            <span class="risk risk-medium">中风险</span>
+          </div>
+
+          <p class="desc">
+            用于减少上传图片后自动生成的缩略图数量，适合图片量很大的企业站或产品站。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用文件：</strong>functions.php</li>
+            <li><strong>代码类型：</strong>PHP</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>图片尺寸 / 缩略图 / big_image_size_threshold</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>PHP</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-php">function coowin_disable_default_image_sizes( $sizes ) {
+    unset( $sizes[&#x27;thumbnail&#x27;] );
+    unset( $sizes[&#x27;medium&#x27;] );
+    unset( $sizes[&#x27;large&#x27;] );
+    unset( $sizes[&#x27;medium_large&#x27;] );
+    unset( $sizes[&#x27;1536x1536&#x27;] );
+    unset( $sizes[&#x27;2048x2048&#x27;] );
+
+    return $sizes;
+}
+add_filter( &#x27;intermediate_image_sizes_advanced&#x27;, &#x27;coowin_disable_default_image_sizes&#x27; );
+
+add_filter( &#x27;big_image_size_threshold&#x27;, &#x27;__return_false&#x27; );
+
+function coowin_remove_custom_image_sizes() {
+    remove_image_size( &#x27;post-thumbnail&#x27; );
+    remove_image_size( &#x27;another-size&#x27; );
+}
+add_action( &#x27;init&#x27;, &#x27;coowin_remove_custom_image_sizes&#x27;, 99 );</code></pre>
+
+          <div class="note">
+            只影响后续上传的新图片，不会自动删除历史缩略图。WooCommerce、Elementor 或主题依赖的尺寸不要随意禁用。
+          </div>
+        </article>
+
+        <!-- v1.0.3：[Breadcrumb] 插件 / 现代主题推荐的面包屑输出方式 -->
+        <article class="code-card" data-category="common" data-tags="wordpress breadcrumb breadcrumbs rank math yoast bcn_display seo plugin 面包屑 导航 7.0">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">高频函数 / 救急代码</p>
+              <h2>[Breadcrumb] 插件 / 现代主题推荐的面包屑输出方式</h2>
+            </div>
+            <span class="risk risk-low">低风险</span>
+          </div>
+
+          <p class="desc">
+            如果网站已经使用 SEO 插件或面包屑插件，优先调用插件输出函数，减少自定义维护成本。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用文件：</strong>header.php / single.php / archive.php</li>
+            <li><strong>代码类型：</strong>PHP</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>Breadcrumb / 面包屑 / SEO 插件</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>PHP</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-php">&lt;div class=&quot;site-breadcrumbs&quot; aria-label=&quot;Breadcrumb&quot;&gt;
+    &lt;?php
+    if ( function_exists( &#x27;rank_math_the_breadcrumbs&#x27; ) ) {
+        rank_math_the_breadcrumbs();
+    } elseif ( function_exists( &#x27;yoast_breadcrumb&#x27; ) ) {
+        yoast_breadcrumb( &#x27;&lt;p id=&quot;breadcrumbs&quot;&gt;&#x27;, &#x27;&lt;/p&gt;&#x27; );
+    } elseif ( function_exists( &#x27;bcn_display&#x27; ) ) {
+        echo &#x27;&lt;nav class=&quot;breadcrumbs&quot;&gt;&#x27;;
+        bcn_display();
+        echo &#x27;&lt;/nav&gt;&#x27;;
+    }
+    ?&gt;
+&lt;/div&gt;</code></pre>
+
+          <div class="note">
+            适合 WordPress 7.0 / 块主题 / SEO 插件共存场景。具体函数是否可用，取决于当前网站安装的插件。
+          </div>
+        </article>
+
+        <!-- v1.0.3：[Breadcrumb] 自定义面包屑导航核心逻辑 -->
+        <article class="code-card" data-category="common" data-tags="wordpress breadcrumb custom breadcrumbs home category single page 自定义 面包屑">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">高频函数 / 救急代码</p>
+              <h2>[Breadcrumb] 自定义面包屑导航核心逻辑</h2>
+            </div>
+            <span class="risk risk-low">低风险</span>
+          </div>
+
+          <p class="desc">
+            适合轻量企业站或简单主题，不依赖插件实现 Home / 分类 / 文章 / 页面 / 搜索 / 404 的基础面包屑。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用文件：</strong>functions.php + 模板文件</li>
+            <li><strong>代码类型：</strong>PHP</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>自定义面包屑 / is_single / is_category</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>PHP</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-php">function coowin_breadcrumbs() {
+    if ( is_front_page() ) {
+        return;
+    }
+
+    echo &#x27;&lt;nav class=&quot;breadcrumbs&quot; aria-label=&quot;Breadcrumb&quot;&gt;&#x27;;
+    echo &#x27;&lt;a href=&quot;&#x27; . esc_url( home_url( &#x27;/&#x27; ) ) . &#x27;&quot;&gt;Home&lt;/a&gt;&#x27;;
+
+    if ( is_category() || is_single() ) {
+        $categories = get_the_category();
+
+        if ( ! empty( $categories ) ) {
+            echo &#x27; &lt;span&gt;/&lt;/span&gt; &#x27;;
+            echo &#x27;&lt;a href=&quot;&#x27; . esc_url( get_category_link( $categories[0]-&gt;term_id ) ) . &#x27;&quot;&gt;&#x27;;
+            echo esc_html( $categories[0]-&gt;name );
+            echo &#x27;&lt;/a&gt;&#x27;;
+        }
+
+        if ( is_single() ) {
+            echo &#x27; &lt;span&gt;/&lt;/span&gt; &#x27;;
+            echo &#x27;&lt;span&gt;&#x27; . esc_html( get_the_title() ) . &#x27;&lt;/span&gt;&#x27;;
+        }
+    } elseif ( is_page() ) {
+        echo &#x27; &lt;span&gt;/&lt;/span&gt; &#x27;;
+        echo &#x27;&lt;span&gt;&#x27; . esc_html( get_the_title() ) . &#x27;&lt;/span&gt;&#x27;;
+    }
+
+    echo &#x27;&lt;/nav&gt;&#x27;;
+}</code></pre>
+
+          <div class="note">
+            模板中使用 <code>&lt;?php coowin_breadcrumbs(); ?&gt;</code> 调用。复杂多层分类、WooCommerce 产品分类建议使用插件或继续扩展。
+          </div>
+        </article>
+
+        <!-- v1.0.3：[Pagination] WordPress 内置分页函数 -->
+        <article class="code-card" data-category="common" data-tags="wordpress pagination the_posts_pagination archive category search 分页 内置函数">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">高频函数 / 救急代码</p>
+              <h2>[Pagination] WordPress 内置分页函数</h2>
+            </div>
+            <span class="risk risk-low">低风险</span>
+          </div>
+
+          <p class="desc">
+            主查询页面优先使用 <code>the_posts_pagination()</code>，适合分类页、标签页、归档页和搜索页。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用文件：</strong>archive.php / category.php / search.php</li>
+            <li><strong>代码类型：</strong>PHP</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>分页 / the_posts_pagination</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>PHP</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-php">&lt;?php
+the_posts_pagination( array(
+    &#x27;mid_size&#x27;  =&gt; 2,
+    &#x27;prev_text&#x27; =&gt; &#x27;上一页&#x27;,
+    &#x27;next_text&#x27; =&gt; &#x27;下一页&#x27;,
+) );
+?&gt;</code></pre>
+
+          <div class="note">
+            适合 WordPress 主查询。如果是自定义 <code>WP_Query</code>，需要使用 <code>paginate_links()</code> 并传入总页数。
+          </div>
+        </article>
+
+        <!-- v1.0.3：[Pagination] 自定义 WP_Query 分页核心代码 -->
+        <article class="code-card" data-category="common" data-tags="wordpress WP_Query paginate_links paged max_num_pages wp_reset_postdata 自定义 分页">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">高频函数 / 救急代码</p>
+              <h2>[Pagination] 自定义 WP_Query 分页核心代码</h2>
+            </div>
+            <span class="risk risk-medium">中风险</span>
+          </div>
+
+          <p class="desc">
+            当页面自己创建 <code>WP_Query</code> 时，必须处理 <code>paged</code>、<code>max_num_pages</code> 和 <code>wp_reset_postdata()</code>。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用文件：</strong>自定义模板文件</li>
+            <li><strong>代码类型：</strong>PHP</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>WP_Query / paginate_links / paged</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>PHP</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-php">$paged = max( 1, get_query_var( &#x27;paged&#x27; ), get_query_var( &#x27;page&#x27; ) );
+
+$query = new WP_Query( array(
+    &#x27;post_type&#x27;      =&gt; &#x27;post&#x27;,
+    &#x27;posts_per_page&#x27; =&gt; 9,
+    &#x27;paged&#x27;          =&gt; $paged,
+) );
+
+if ( $query-&gt;have_posts() ) :
+    while ( $query-&gt;have_posts() ) :
+        $query-&gt;the_post();
+        get_template_part( &#x27;template-parts/content&#x27;, get_post_type() );
+    endwhile;
+
+    echo paginate_links( array(
+        &#x27;total&#x27;   =&gt; $query-&gt;max_num_pages,
+        &#x27;current&#x27; =&gt; $paged,
+        &#x27;prev_text&#x27; =&gt; &#x27;上一页&#x27;,
+        &#x27;next_text&#x27; =&gt; &#x27;下一页&#x27;,
+    ) );
+
+    wp_reset_postdata();
+endif;</code></pre>
+
+          <div class="note">
+            如果固定链接规则异常，保存一次“设置 → 固定链接”。多查询页面尤其要注意不要覆盖主查询。
+          </div>
+        </article>
+
+        <!-- v1.0.3：[CPT] 自定义内容类型和分类法注册模板 -->
+        <article class="code-card" data-category="common" data-tags="wordpress cpt custom post type register_post_type register_taxonomy taxonomy 自定义文章类型 分类法">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">高频函数 / 救急代码</p>
+              <h2>[CPT] 自定义内容类型和分类法注册模板</h2>
+            </div>
+            <span class="risk risk-medium">中风险</span>
+          </div>
+
+          <p class="desc">
+            适合把项目案例、下载资料、FAQ、产品资料等独立内容模型沉淀为可复用代码。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用文件：</strong>functions.php 或小插件</li>
+            <li><strong>代码类型：</strong>PHP</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>register_post_type / register_taxonomy / CPT</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>PHP</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-php">function coowin_register_project_post_type() {
+    register_post_type( &#x27;project&#x27;, array(
+        &#x27;labels&#x27; =&gt; array(
+            &#x27;name&#x27;          =&gt; &#x27;Projects&#x27;,
+            &#x27;singular_name&#x27; =&gt; &#x27;Project&#x27;,
+        ),
+        &#x27;public&#x27;       =&gt; true,
+        &#x27;has_archive&#x27;  =&gt; true,
+        &#x27;rewrite&#x27;      =&gt; array( &#x27;slug&#x27; =&gt; &#x27;projects&#x27; ),
+        &#x27;menu_icon&#x27;    =&gt; &#x27;dashicons-portfolio&#x27;,
+        &#x27;supports&#x27;     =&gt; array( &#x27;title&#x27;, &#x27;editor&#x27;, &#x27;thumbnail&#x27;, &#x27;excerpt&#x27; ),
+        &#x27;show_in_rest&#x27; =&gt; true,
+    ) );
+
+    register_taxonomy( &#x27;project_category&#x27;, &#x27;project&#x27;, array(
+        &#x27;labels&#x27; =&gt; array(
+            &#x27;name&#x27;          =&gt; &#x27;Project Categories&#x27;,
+            &#x27;singular_name&#x27; =&gt; &#x27;Project Category&#x27;,
+        ),
+        &#x27;public&#x27;       =&gt; true,
+        &#x27;hierarchical&#x27; =&gt; true,
+        &#x27;rewrite&#x27;      =&gt; array( &#x27;slug&#x27; =&gt; &#x27;project-category&#x27; ),
+        &#x27;show_in_rest&#x27; =&gt; true,
+    ) );
+}
+add_action( &#x27;init&#x27;, &#x27;coowin_register_project_post_type&#x27; );</code></pre>
+
+          <div class="note">
+            新增或修改 slug 后，进入“设置 → 固定链接”保存一次。长期项目建议写成小插件，避免换主题后内容类型消失。
+          </div>
+        </article>
+
+        <!-- v1.0.3：[Template Tags] 必须牢记的模板标签速查 -->
+        <article class="code-card" data-category="common" data-tags="wordpress template tags get_template_part single_cat_title single_tag_title get_queried_object wp_tag_cloud get_theme_file_uri 模板标签">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">高频函数 / 救急代码</p>
+              <h2>[Template Tags] 必须牢记的模板标签速查</h2>
+            </div>
+            <span class="risk risk-low">低风险</span>
+          </div>
+
+          <p class="desc">
+            整理主题开发中最常见的模板标签，适合快速回忆分类页、标签页、模板拆分和资源路径写法。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用文件：</strong>主题模板文件</li>
+            <li><strong>代码类型：</strong>PHP</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>模板标签 / get_template_part / get_queried_object</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>PHP</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-php">// 拆分模板文件
+get_template_part( &#x27;template-parts/content&#x27;, get_post_type() );
+
+// 分类页标题
+single_cat_title();
+
+// 标签页标题
+single_tag_title();
+
+// 当前查询对象：分类、标签、自定义分类等
+$current_object = get_queried_object();
+
+// 主题资源路径
+$image_url = get_theme_file_uri( &#x27;assets/images/logo.png&#x27; );
+
+// 标签云
+wp_tag_cloud( array(
+    &#x27;smallest&#x27; =&gt; 12,
+    &#x27;largest&#x27;  =&gt; 18,
+    &#x27;unit&#x27;     =&gt; &#x27;px&#x27;,
+    &#x27;number&#x27;   =&gt; 20,
+) );</code></pre>
+
+          <div class="note">
+            输出到页面前注意使用 <code>esc_html()</code>、<code>esc_url()</code> 等转义函数，避免把未经处理的数据直接输出。
+          </div>
+        </article>
+
+        <!-- v1.0.3：[WP_Query] tax_query 常见查询写法 -->
+        <article class="code-card" data-category="common" data-tags="wordpress WP_Query tax_query taxonomy terms field slug 自定义查询 分类筛选">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">高频函数 / 救急代码</p>
+              <h2>[WP_Query] tax_query 常见查询写法</h2>
+            </div>
+            <span class="risk risk-medium">中风险</span>
+          </div>
+
+          <p class="desc">
+            用于按分类、自定义分类法筛选文章、项目、产品案例等内容。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用文件：</strong>模板文件 / functions.php</li>
+            <li><strong>代码类型：</strong>PHP</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>WP_Query / tax_query / taxonomy</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>PHP</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-php">$query = new WP_Query( array(
+    &#x27;post_type&#x27;      =&gt; &#x27;project&#x27;,
+    &#x27;posts_per_page&#x27; =&gt; 9,
+    &#x27;tax_query&#x27;      =&gt; array(
+        array(
+            &#x27;taxonomy&#x27; =&gt; &#x27;project_category&#x27;,
+            &#x27;field&#x27;    =&gt; &#x27;slug&#x27;,
+            &#x27;terms&#x27;    =&gt; array( &#x27;decking&#x27; ),
+        ),
+    ),
+) );
+
+if ( $query-&gt;have_posts() ) :
+    while ( $query-&gt;have_posts() ) :
+        $query-&gt;the_post();
+        the_title( &#x27;&lt;h2&gt;&#x27;, &#x27;&lt;/h2&gt;&#x27; );
+    endwhile;
+    wp_reset_postdata();
+endif;</code></pre>
+
+          <div class="note">
+            自定义查询结束后必须执行 <code>wp_reset_postdata()</code>。多个条件时可增加 <code>relation</code>，例如 <code>AND</code> 或 <code>OR</code>。
+          </div>
+        </article>
+
+        <!-- v1.0.3：[Ajax] $.ajax 表单提交与 WordPress 后端处理 -->
+        <article class="code-card" data-category="common" data-tags="wordpress ajax jquery $.ajax admin-ajax.php wp_ajax wp_ajax_nopriv nonce 表单提交">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">高频函数 / 救急代码</p>
+              <h2>[Ajax] $.ajax 表单提交与 WordPress 后端处理</h2>
+            </div>
+            <span class="risk risk-medium">中风险</span>
+          </div>
+
+          <p class="desc">
+            常用于联系表单、询盘表单、计算器表单和报名表单，包含前端提交、Nonce 校验和后端邮件处理。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用文件：</strong>assets/js/form.js + functions.php</li>
+            <li><strong>代码类型：</strong>JavaScript / PHP</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>$.ajax / admin-ajax.php / nonce</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>JS</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-js">// 前台 JS
+jQuery(function($) {
+    $(&#x27;#contactForm&#x27;).on(&#x27;submit&#x27;, function(e) {
+        e.preventDefault();
+
+        $.ajax({
+            url: ajax_object.ajax_url,
+            type: &#x27;POST&#x27;,
+            dataType: &#x27;json&#x27;,
+            data: {
+                action: &#x27;coowin_submit_form&#x27;,
+                nonce: ajax_object.nonce,
+                name: $(&#x27;#name&#x27;).val(),
+                email: $(&#x27;#email&#x27;).val()
+            },
+            success: function(response) {
+                alert(response.success ? &#x27;提交成功&#x27; : &#x27;提交失败&#x27;);
+            }
+        });
+    });
+});</code></pre>
+
+          <div class="note">
+            完整后端 PHP 写法已放入 v1.0.3 详细文档。真实项目必须补充字段校验、Nonce 校验、邮箱格式校验和防刷逻辑。
+          </div>
+        </article>
+
+        <!-- v1.0.3：[Script] 给关键脚本添加 data-nowprocket 属性 -->
+        <article class="code-card" data-category="common" data-tags="wordpress script_loader_tag data-nowprocket wp rocket cache delay js 脚本 优化">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">高频函数 / 救急代码</p>
+              <h2>[Script] 给关键脚本添加 data-nowprocket 属性</h2>
+            </div>
+            <span class="risk risk-low">低风险</span>
+          </div>
+
+          <p class="desc">
+            当缓存或性能优化插件延迟加载脚本导致功能异常时，可给关键脚本添加属性，让优化插件跳过处理。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用文件：</strong>functions.php</li>
+            <li><strong>代码类型：</strong>PHP</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>data-nowprocket / script_loader_tag / WP Rocket</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>PHP</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-php">function coowin_add_data_nowprocket_attribute( $tag, $handle, $src ) {
+    if ( &#x27;coowin-important-script&#x27; === $handle ) {
+        return &#x27;&lt;script data-nowprocket src=&quot;&#x27; . esc_url( $src ) . &#x27;&quot;&gt;&lt;/script&gt;&#x27;;
+    }
+
+    return $tag;
+}
+add_filter( &#x27;script_loader_tag&#x27;, &#x27;coowin_add_data_nowprocket_attribute&#x27;, 10, 3 );</code></pre>
+
+          <div class="note">
+            只给确实不能被延迟加载或合并的关键脚本添加。滥用会降低性能优化效果。
+          </div>
+        </article>
+
+        <!-- v1.0.3：[Plugin] 插件开发常用 4 类代码 -->
+        <article class="code-card" data-category="common" data-tags="wordpress plugin add_action add_filter register_activation_hook add_shortcode 插件 钩子 短代码">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">高频函数 / 救急代码</p>
+              <h2>[Plugin] 插件开发常用 4 类代码</h2>
+            </div>
+            <span class="risk risk-low">低风险</span>
+          </div>
+
+          <p class="desc">
+            小插件开发必须熟悉的基础结构：动作钩子、过滤钩子、启用钩子和短代码。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用文件：</strong>插件主文件</li>
+            <li><strong>代码类型：</strong>PHP</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>add_action / add_filter / activation hook / shortcode</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>PHP</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-php">// 1. 动作钩子
+add_action( &#x27;init&#x27;, &#x27;coowin_plugin_init&#x27; );
+
+// 2. 过滤钩子
+add_filter( &#x27;the_title&#x27;, &#x27;coowin_modify_title&#x27; );
+
+// 3. 插件启用钩子
+register_activation_hook( __FILE__, &#x27;coowin_plugin_activate&#x27; );
+
+// 4. 短代码
+add_shortcode( &#x27;coowin_demo&#x27;, &#x27;coowin_demo_shortcode&#x27; );</code></pre>
+
+          <div class="note">
+            所有函数名建议使用项目前缀，例如 <code>coowin_</code>，避免和主题、插件或 WordPress 核心函数重名。
+          </div>
+        </article>
+
 
         <!-- 示例 1：WooCommerce -->
         <article class="code-card" data-category="woocommerce" data-tags="woocommerce product button php functions.php 加入购物车 按钮 询价">
@@ -1185,7 +1778,7 @@ add_filter(&#x27;get_the_archive_title_prefix&#x27;, &#x27;__return_false&#x27;)
 
   <footer class="site-footer">
     <div class="container">
-      <p>WordPress / WooCommerce 商城代码片段知识库 · v1.0.2</p>
+      <p>WordPress / WooCommerce 商城代码片段知识库 · v1.0.3</p>
       <p>建议：每次正式修改网站前，先备份文件和数据库。</p>
     </div>
   </footer>
