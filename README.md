@@ -14,6 +14,8 @@
 wordpress-woocommerce-code-library/
 ├── index.html
 ├── README.md
+├── docs/
+│   └── woocommerce-theme-core-knowledge-v1.0.1.md
 └── assets/
     ├── css/
     │   └── style.css
@@ -36,12 +38,32 @@ wordpress-woocommerce-code-library/
 
 - WordPress 基础
 - WooCommerce 商城
+- 主题 / 插件架构
 - Elementor
 - 表单 / 邮件
 - 数据库 SQL
 - 安全排查
 - 服务器配置
 - CSS / JS
+
+
+## v1.0.1 核心文档
+
+本版本新增 WooCommerce B2B 询价型商城主题的核心知识点整理，来源于 `Woo商城主题.zip`。
+
+主要整理内容：
+
+- Woo 商城主题 `mytheme` 的文件结构和职责边界
+- WooCommerce 模板覆盖：列表页、产品卡片、详情页
+- B2B 询价模式：Add to Quote → Quote List → 后台询盘管理
+- `coowin-quote-system` 插件的数据表、Ajax 接口和通用表单规范
+- `coowin-sample-pack` 样品包插件的样品选择逻辑
+- 变体色卡、场景图库、Swiper 兼容策略
+- 常见问题排查清单和改版测试清单
+
+详细文档：
+
+[查看 Woo 商城主题核心知识点整理](docs/woocommerce-theme-core-knowledge-v1.0.1.md)
 
 ## 新增代码片段的方法
 
@@ -109,6 +131,7 @@ wordpress-woocommerce-code-library/
 |---|---|
 | WordPress 基础 | `wordpress` |
 | WooCommerce 商城 | `woocommerce` |
+| 主题 / 插件架构 | `theme` |
 | Elementor | `elementor` |
 | 表单 / 邮件 | `form` |
 | 数据库 SQL | `database` |
@@ -157,6 +180,15 @@ $admin_email = 'company@example.com';
 ```
 
 ## 更新记录
+
+### v1.0.1
+
+- 新增 WooCommerce B2B 询价型商城主题核心知识点整理。
+- 新增 `docs/woocommerce-theme-core-knowledge-v1.0.1.md` 详细文档。
+- 补充 `mytheme` 主题、WooCommerce 模板覆盖、Add to Quote 询盘流程、Quote System 插件、Sample Pack 插件等关键知识点。
+- 首页新增“主题 / 插件架构”分类。
+- 首页新增多个 Woo 商城主题相关知识卡片，方便快速查阅。
+- README 增加 v1.0.1 核心文档入口和版本记录。
 
 ### v1.0.0
 

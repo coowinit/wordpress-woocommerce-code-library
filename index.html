@@ -19,6 +19,7 @@
       </div>
       <div class="header-actions">
         <a class="button button-light" href="README.md">查看 README</a>
+        <a class="button button-light" href="docs/woocommerce-theme-core-knowledge-v1.0.1.md">Woo 主题知识点</a>
         <a class="button button-primary" href="#code-list">浏览代码</a>
       </div>
     </div>
@@ -31,6 +32,7 @@
         <button class="filter-btn active" data-filter="all">全部代码</button>
         <button class="filter-btn" data-filter="wordpress">WordPress 基础</button>
         <button class="filter-btn" data-filter="woocommerce">WooCommerce 商城</button>
+        <button class="filter-btn" data-filter="theme">主题 / 插件架构</button>
         <button class="filter-btn" data-filter="elementor">Elementor</button>
         <button class="filter-btn" data-filter="form">表单 / 邮件</button>
         <button class="filter-btn" data-filter="database">数据库 SQL</button>
@@ -72,6 +74,8 @@
         <p>
           本页面适合上传到 GitHub Pages 作为在线查询页。新增代码时，建议统一记录：
           <strong>适用场景、适用文件、代码类型、风险等级、更新时间、标签和注意事项</strong>。
+          v1.0.1 已补充 Woo 商城主题核心知识点，详细文档见
+          <a href="docs/woocommerce-theme-core-knowledge-v1.0.1.md"><strong>Woo 商城主题核心知识点整理</strong></a>。
         </p>
         <p class="warning-text">
           公开仓库中不要保存数据库密码、后台账号、API Key、插件授权码、客户邮箱、服务器 IP 等敏感信息。
@@ -371,6 +375,378 @@ max_execution_time = 300</code></pre>
           </div>
         </article>
 
+
+
+        <!-- v1.0.1：Woo 商城主题知识点 1 -->
+        <article class="code-card" data-category="theme" data-tags="woocommerce theme plugin architecture mytheme coowin quote system sample pack 架构 主题 插件 B2B 询价">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">主题 / 插件架构</p>
+              <h2>[v1.0.1] Woo B2B 询价型商城整体架构</h2>
+            </div>
+            <span class="risk risk-low">知识点</span>
+          </div>
+
+          <p class="desc">
+            该 Woo 商城不是传统在线支付商城，而是 B2B 询价型商城：产品展示后引导用户加入询价单，再统一提交到后台线索中心。
+          </p>
+
+          <ul class="meta">
+            <li><strong>来源文件：</strong>Woo商城主题.zip</li>
+            <li><strong>涉及模块：</strong>mytheme / coowin-quote-system / coowin-sample-pack</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>B2B / Quote / WooCommerce / 架构</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>TEXT</span>
+            <button class="copy-btn" type="button">复制内容</button>
+          </div>
+          <pre><code class="language-text">产品展示
+  ↓
+选择产品 / 变体 / 样品
+  ↓
+Add to Quote
+  ↓
+/quote/ 页面提交询盘
+  ↓
+wp_coo_inquiry_entries 入库
+  ↓
+后台 Quote Inquiries 统一管理</code></pre>
+
+          <div class="note">
+            维护时要区分职责：主题负责展示层，Quote System 插件负责数据入库和后台管理，Sample Pack 插件负责样品选择器。
+          </div>
+        </article>
+
+        <!-- v1.0.1：Woo 商城主题知识点 2 -->
+        <article class="code-card" data-category="theme" data-tags="wordpress theme file structure mytheme woocommerce templates plugins 文件结构 主题目录">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">主题 / 插件架构</p>
+              <h2>[v1.0.1] Woo 商城主题源码核心文件地图</h2>
+            </div>
+            <span class="risk risk-low">知识点</span>
+          </div>
+
+          <p class="desc">
+            `Woo商城主题.zip` 中包含主题包和插件包。重点不是记住所有文件，而是知道哪些文件负责核心业务。
+          </p>
+
+          <ul class="meta">
+            <li><strong>主题目录：</strong>themes/mytheme/</li>
+            <li><strong>插件目录：</strong>coowin-quote-system / coowin-sample-pack</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>文件结构 / 模板 / 插件职责</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>TEXT</span>
+            <button class="copy-btn" type="button">复制内容</button>
+          </div>
+          <pre><code class="language-text">themes/mytheme/
+├── functions.php                 # 主题核心功能、资源加载、Woo 增强
+├── header.php / footer.php        # 标准页面骨架，必须包含 wp_head/wp_footer
+├── meta_seo.php                   # SEO 标题和描述
+├── page-quote.php                 # Quote List 页面模板
+├── woocommerce/
+│   ├── archive-product.php        # Shop / 分类页
+│   ├── content-product.php        # 产品卡片
+│   ├── single-product.php         # 单品页 wrapper
+│   └── content-single-product.php # 单品详情主体
+plugins/
+├── coowin-quote-system/           # Add to Quote + 询盘后台
+└── coowin-sample-pack/            # 样品包选择器</code></pre>
+
+          <div class="note">
+            后续排查 Woo 页面问题时，优先看 `woocommerce/` 覆盖模板和 `functions.php` 中对应的资源加载条件。
+          </div>
+        </article>
+
+        <!-- v1.0.1：Woo 商城主题知识点 3 -->
+        <article class="code-card" data-category="woocommerce" data-tags="woocommerce archive product content product template override category navigation pagination 模板覆盖 产品列表 分类">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">WooCommerce 商城</p>
+              <h2>[v1.0.1] WooCommerce 列表页模板覆盖逻辑</h2>
+            </div>
+            <span class="risk risk-medium">中风险</span>
+          </div>
+
+          <p class="desc">
+            产品分类页由 `archive-product.php` 控制整体结构，由 `content-product.php` 控制单个产品卡片。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用文件：</strong>woocommerce/archive-product.php / content-product.php</li>
+            <li><strong>代码类型：</strong>PHP / WooCommerce Template</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>产品列表 / 分类导航 / 产品卡片</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>TEXT</span>
+            <button class="copy-btn" type="button">复制内容</button>
+          </div>
+          <pre><code class="language-text">archive-product.php：
+- 输出分类页 Banner
+- 输出一级 / 二级产品分类导航
+- 输出 Woo 排序器和结果数量
+- 循环调用 content-product.php
+- 输出分页
+
+content-product.php：
+- 特色图 + 图库第一张 hover 切换
+- 简单产品：Add to Quote
+- 变体 / 组合产品：Select options</code></pre>
+
+          <div class="note">
+            列表页不要直接处理复杂变体选择。变体产品应进入详情页，由 Woo 原生 variation 表单完成选择。
+          </div>
+        </article>
+
+        <!-- v1.0.1：Woo 商城主题知识点 4 -->
+        <article class="code-card" data-category="woocommerce" data-tags="woocommerce single product gallery swatches add to quote quote list 产品详情页 色卡 询价">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">WooCommerce 商城</p>
+              <h2>[v1.0.1] 产品详情页核心区域</h2>
+            </div>
+            <span class="risk risk-medium">中风险</span>
+          </div>
+
+          <p class="desc">
+            产品详情页主体由 `content-single-product.php` 控制，是图库、变体、询价按钮、详情内容和右侧表单的核心页面。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用文件：</strong>woocommerce/content-single-product.php</li>
+            <li><strong>代码类型：</strong>PHP / WooCommerce Template</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>产品详情页 / Swiper / 变体 / Quote</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>TEXT</span>
+            <button class="copy-btn" type="button">复制内容</button>
+          </div>
+          <pre><code class="language-text">产品详情页核心区域：
+1. 左侧 Swiper 产品图库
+2. 右侧标题 / 评分 / 价格
+3. Woo 原生 Add to Cart 表单
+4. 插件把按钮语义改为 Add to Quote
+5. View Quote List 链接
+6. SKU / Category
+7. Elementor 内容区
+8. 评论区
+9. 右侧 Request a quote 通用表单
+10. Related products 轮播</code></pre>
+
+          <div class="note danger">
+            变体、数量和 Add to Quote 不要脱离 Woo 原生表单结构。前端 UI 可以增强，但最终必须回写 Woo 原生字段。
+          </div>
+        </article>
+
+        <!-- v1.0.1：Woo 商城主题知识点 5 -->
+        <article class="code-card" data-category="woocommerce" data-tags="woocommerce variation swatches color colour scene gallery attribute_pa 色卡 变体 场景图">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">WooCommerce 商城</p>
+              <h2>[v1.0.1] 变体色卡与场景图库维护要点</h2>
+            </div>
+            <span class="risk risk-medium">中风险</span>
+          </div>
+
+          <p class="desc">
+            主题支持把颜色属性变成色卡，并且可以给每个颜色 term 配置场景图库。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用文件：</strong>functions.php / woo-swatches.js / woo-swatches.css</li>
+            <li><strong>代码类型：</strong>PHP / JavaScript / Term Meta</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>变体 / 色卡 / 场景图 / attribute_pa_xxx</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>TEXT</span>
+            <button class="copy-btn" type="button">复制内容</button>
+          </div>
+          <pre><code class="language-text">颜色属性识别：
+- color
+- colour
+- pa_xxx_color
+- pa_xxx_colour
+
+颜色 term meta：
+- coo_swatch_hex       # 色卡颜色值
+- coo_swatch_image_id  # 色卡缩略图
+- coo_scene_gallery    # 当前颜色对应的场景图库
+
+最关键：
+Woo 原生 select name 是 attribute_pa_xxx
+色卡按钮 data-attribute 也必须是 attribute_pa_xxx</code></pre>
+
+          <div class="note danger">
+            如果写成 `pa_xxx`，前端看似选中色卡，但 WooCommerce 实际没有选中变体，提交时会丢失 variation 数据。
+          </div>
+        </article>
+
+        <!-- v1.0.1：Woo 商城主题知识点 6 -->
+        <article class="code-card" data-category="form" data-tags="coowin quote system generic form ajax inquiry coo_inquiry_submit_generic 表单 询盘 入库 hidden fields">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">表单 / 邮件</p>
+              <h2>[v1.0.1] Quote System 通用表单接入规范</h2>
+            </div>
+            <span class="risk risk-medium">中风险</span>
+          </div>
+
+          <p class="desc">
+            Contact、Pricing、Product Details 右侧表单等非产品询盘，建议统一使用 `data-coo-inquiry-form` 接入通用 Ajax 入库接口。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用插件：</strong>coowin-quote-system</li>
+            <li><strong>Ajax Action：</strong>coo_inquiry_submit_generic</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>通用表单 / Ajax / 询盘入库 / Custom Fields</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>HTML</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-html">&lt;form data-coo-inquiry-form&gt;
+  &lt;input type=&quot;hidden&quot; name=&quot;_coo_source&quot; value=&quot;contact&quot;&gt;
+  &lt;input type=&quot;hidden&quot; name=&quot;_coo_form_key&quot; value=&quot;contact_page_main&quot;&gt;
+  &lt;input type=&quot;hidden&quot; name=&quot;_coo_form_title&quot; value=&quot;Contact Us Form&quot;&gt;
+  &lt;input type=&quot;hidden&quot; name=&quot;_coo_required&quot; value=&quot;name,email,message&quot;&gt;
+  &lt;input type=&quot;hidden&quot; name=&quot;_coo_labels&quot; value=&#x27;{&quot;material_type&quot;:&quot;Material Type&quot;}&#x27;&gt;
+
+  &lt;input type=&quot;text&quot; name=&quot;name&quot;&gt;
+  &lt;input type=&quot;email&quot; name=&quot;email&quot;&gt;
+  &lt;textarea name=&quot;message&quot;&gt;&lt;/textarea&gt;
+
+  &lt;input type=&quot;text&quot; name=&quot;website&quot; style=&quot;display:none&quot; tabindex=&quot;-1&quot; autocomplete=&quot;off&quot;&gt;
+  &lt;button type=&quot;submit&quot;&gt;Submit&lt;/button&gt;
+  &lt;div data-coo-form-msg style=&quot;display:none&quot;&gt;&lt;/div&gt;
+&lt;/form&gt;</code></pre>
+
+          <div class="note">
+            `_coo_required` 中的字段名必须和实际表单控件的 `name` 完全一致；非标准字段会进入 `meta_json.fields`。
+          </div>
+        </article>
+
+        <!-- v1.0.1：Woo 商城主题知识点 7 -->
+        <article class="code-card" data-category="database" data-tags="coowin quote system database wp_coo_inquiry_entries items_json meta_json 询盘 数据库">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">数据库 SQL</p>
+              <h2>[v1.0.1] Quote System 主数据表结构</h2>
+            </div>
+            <span class="risk risk-high">高风险</span>
+          </div>
+
+          <p class="desc">
+            `coowin-quote-system` 的核心业务表是 `wp_coo_inquiry_entries`，用于统一存储产品询盘和通用表单线索。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用插件：</strong>coowin-quote-system</li>
+            <li><strong>数据表：</strong>wp_coo_inquiry_entries</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>数据库 / 询盘 / items_json / meta_json</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>TEXT</span>
+            <button class="copy-btn" type="button">复制内容</button>
+          </div>
+          <pre><code class="language-text">核心字段：
+id
+created_at / updated_at
+status: new / read / spam / trash
+source: quote / contact / pricing / sample / support / custom
+name / email / phone / company / country / message
+page_url / user_ip / user_agent / referrer
+items_json  # 产品询盘项目
+meta_json   # 通用表单扩展字段</code></pre>
+
+          <div class="note danger">
+            如果站点数据表前缀不是 `wp_`，实际表名会变化。直接操作数据库前必须先备份。
+          </div>
+        </article>
+
+        <!-- v1.0.1：Woo 商城主题知识点 8 -->
+        <article class="code-card" data-category="woocommerce" data-tags="sample pack coowin sample pack decking cladding fencing sample_colour 样品包 样品选择器">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">WooCommerce 商城</p>
+              <h2>[v1.0.1] Sample Pack 样品包插件逻辑</h2>
+            </div>
+            <span class="risk risk-medium">中风险</span>
+          </div>
+
+          <p class="desc">
+            `coowin-sample-pack` 会在样品产品的 Add to Quote 按钮前输出多个样品颜色选择器，并把选择结果写入 Quote attrs。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用插件：</strong>coowin-sample-pack</li>
+            <li><strong>输出位置：</strong>woocommerce_before_add_to_cart_button</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>Sample Pack / 样品 / Quote attrs</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>JS</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-js">attrs.sample_type = typeLabel;
+attrs[&#x27;sample_colour_&#x27; + String(index + 1)] = label || value;</code></pre>
+
+          <div class="note">
+            Quote List 页面已对 `sample_type`、`sample_colour_1`、`sample_colour_2`、`sample_colour_3` 做了可读化显示。
+          </div>
+        </article>
+
+        <!-- v1.0.1：Woo 商城主题知识点 9 -->
+        <article class="code-card" data-category="frontend" data-tags="swiper elementor woocommerce javascript proxy mytheme-swiper-proxy 轮播 资源加载">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">CSS / JS</p>
+              <h2>[v1.0.1] Swiper 智能代理与资源加载策略</h2>
+            </div>
+            <span class="risk risk-medium">中风险</span>
+          </div>
+
+          <p class="desc">
+            主题使用 `mytheme-swiper-proxy` 解决主题、Elementor、WooCommerce 或其他插件之间的 Swiper 冲突。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用文件：</strong>functions.php</li>
+            <li><strong>代码类型：</strong>PHP / wp_enqueue_scripts</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>Swiper / Elementor / 资源依赖 / 兼容</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>TEXT</span>
+            <button class="copy-btn" type="button">复制内容</button>
+          </div>
+          <pre><code class="language-text">维护原则：
+- 自定义脚本如果需要 Swiper，统一依赖 mytheme-swiper-proxy
+- 产品详情页：优先使用 Elementor / 已存在 Swiper，不强行加载主题 Swiper
+- 非产品页：如果没有 Swiper，则加载主题自带 Swiper 11
+- 避免多个 Swiper 版本同时抢占 window.Swiper</code></pre>
+
+          <div class="note">
+            当轮播不动、箭头失效或控制台提示 Swiper undefined 时，优先检查 Swiper handle、加载顺序和页面类型判断。
+          </div>
+        </article>
+
       </section>
 
       <section id="emptyState" class="empty-state" hidden>
@@ -381,7 +757,7 @@ max_execution_time = 300</code></pre>
 
   <footer class="site-footer">
     <div class="container">
-      <p>WordPress / WooCommerce 商城代码片段知识库 · v1.0.0</p>
+      <p>WordPress / WooCommerce 商城代码片段知识库 · v1.0.1</p>
       <p>建议：每次正式修改网站前，先备份文件和数据库。</p>
     </div>
   </footer>

@@ -502,3 +502,10 @@ pre code {
     font-size: 13px;
   }
 }
+
+
+.intro-card a {
+  color: var(--primary-dark);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
