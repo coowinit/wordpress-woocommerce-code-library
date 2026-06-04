@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WordPress / WooCommerce 商城代码片段知识库</title>
+  <meta name="description" content="用于整理 WordPress、WooCommerce 商城搭建、维护、安全排查和功能修改过程中常用的重要代码片段。" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div>
+        <p class="eyebrow">Code Library</p>
+        <h1>WordPress / WooCommerce 商城代码片段知识库</h1>
+        <p class="header-desc">
+          整理商城搭建、功能修改、数据库维护、安全排查和前端样式中常用的重要代码，方便后续快速查阅、复制和复用。
+        </p>
+      </div>
+      <div class="header-actions">
+        <a class="button button-light" href="README.md">查看 README</a>
+        <a class="button button-primary" href="#code-list">浏览代码</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container layout">
+    <aside class="sidebar">
+      <div class="panel">
+        <h2>分类筛选</h2>
+        <button class="filter-btn active" data-filter="all">全部代码</button>
+        <button class="filter-btn" data-filter="wordpress">WordPress 基础</button>
+        <button class="filter-btn" data-filter="woocommerce">WooCommerce 商城</button>
+        <button class="filter-btn" data-filter="elementor">Elementor</button>
+        <button class="filter-btn" data-filter="form">表单 / 邮件</button>
+        <button class="filter-btn" data-filter="database">数据库 SQL</button>
+        <button class="filter-btn" data-filter="security">安全排查</button>
+        <button class="filter-btn" data-filter="server">服务器配置</button>
+        <button class="filter-btn" data-filter="frontend">CSS / JS</button>
+      </div>
+
+      <div class="panel tips-panel">
+        <h2>维护规则</h2>
+        <ol>
+          <li>复制一个 <code>code-card</code> 卡片。</li>
+          <li>修改标题、说明、标签和代码。</li>
+          <li>在 README 的更新记录中补充一行。</li>
+        </ol>
+      </div>
+    </aside>
+
+    <section class="content">
+      <section class="toolbar" aria-label="代码片段搜索和统计">
+        <div class="search-wrap">
+          <label for="searchInput">搜索代码片段</label>
+          <input id="searchInput" type="search" placeholder="例如：WooCommerce、评论、SQL、表单、functions.php..." />
+        </div>
+        <div class="stats">
+          <div>
+            <strong id="visibleCount">0</strong>
+            <span>当前显示</span>
+          </div>
+          <div>
+            <strong id="totalCount">0</strong>
+            <span>全部代码</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="intro-card">
+        <h2>使用说明</h2>
+        <p>
+          本页面适合上传到 GitHub Pages 作为在线查询页。新增代码时，建议统一记录：
+          <strong>适用场景、适用文件、代码类型、风险等级、更新时间、标签和注意事项</strong>。
+        </p>
+        <p class="warning-text">
+          公开仓库中不要保存数据库密码、后台账号、API Key、插件授权码、客户邮箱、服务器 IP 等敏感信息。
+        </p>
+      </section>
+
+      <section id="code-list" class="code-list">
+
+        <!-- 示例 1：WooCommerce -->
+        <article class="code-card" data-category="woocommerce" data-tags="woocommerce product button php functions.php 加入购物车 按钮 询价">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">WooCommerce 商城</p>
+              <h2>[WooCommerce] 修改产品详情页加入购物车按钮文字</h2>
+            </div>
+            <span class="risk risk-low">低风险</span>
+          </div>
+
+          <p class="desc">
+            用于把产品详情页默认的 “Add to cart” 按钮文字修改为自定义文字，例如 “立即询价”。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用文件：</strong>子主题 functions.php</li>
+            <li><strong>代码类型：</strong>PHP</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>WooCommerce / 产品详情页 / 按钮文字</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>PHP</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-php">add_filter('woocommerce_product_single_add_to_cart_text', function() {
+    return '立即询价';
+});</code></pre>
+
+          <div class="note">
+            建议添加到子主题的 <code>functions.php</code> 文件中，避免主题更新后代码被覆盖。
+          </div>
+        </article>
+
+        <!-- 示例 2：WordPress -->
+        <article class="code-card" data-category="wordpress" data-tags="wordpress comments php functions.php 后台 评论 禁用">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">WordPress 基础</p>
+              <h2>[WordPress] 后台隐藏评论菜单</h2>
+            </div>
+            <span class="risk risk-low">低风险</span>
+          </div>
+
+          <p class="desc">
+            适用于不需要评论功能的企业站或商城站，后台隐藏评论菜单，减少误操作。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用文件：</strong>子主题 functions.php</li>
+            <li><strong>代码类型：</strong>PHP</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>WordPress / 评论 / 后台菜单</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>PHP</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-php">add_action('admin_menu', function() {
+    remove_menu_page('edit-comments.php');
+});</code></pre>
+
+          <div class="note">
+            这段代码只是隐藏后台评论菜单，不会删除数据库中的评论数据。
+          </div>
+        </article>
+
+        <!-- 示例 3：SQL -->
+        <article class="code-card" data-category="database" data-tags="wordpress sql database comments delete wp_comments wp_commentmeta 删除 评论 数据库">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">数据库 SQL</p>
+              <h2>[SQL] 删除 WordPress 所有评论数据</h2>
+            </div>
+            <span class="risk risk-high">高风险</span>
+          </div>
+
+          <p class="desc">
+            用于清空 WordPress 评论表和评论元数据表。适合确认网站不需要评论功能后再执行。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用位置：</strong>phpMyAdmin / 数据库管理工具</li>
+            <li><strong>代码类型：</strong>SQL</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>SQL / 评论 / 数据库清理</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>SQL</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-sql">TRUNCATE TABLE wp_comments;
+TRUNCATE TABLE wp_commentmeta;</code></pre>
+
+          <div class="note danger">
+            执行前必须备份数据库。如果你的数据表前缀不是 <code>wp_</code>，请先改成自己的表前缀。
+          </div>
+        </article>
+
+        <!-- 示例 4：表单邮件 -->
+        <article class="code-card" data-category="form" data-tags="wordpress form mail city routing php functions.php 表单 邮件 城市 代理">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">表单 / 邮件</p>
+              <h2>[Form] 根据城市分配邮件收件人</h2>
+            </div>
+            <span class="risk risk-medium">中风险</span>
+          </div>
+
+          <p class="desc">
+            用于表单提交后，根据用户选择的城市，把邮件发送给不同代理商或公司主邮箱。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用文件：</strong>functions.php 或自定义插件</li>
+            <li><strong>代码类型：</strong>PHP</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>表单 / 邮件路由 / 城市代理</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>PHP</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-php">function get_recipient_by_city($city) {
+    $default_email = 'company@example.com';
+
+    $city_email_map = [
+        'Quebec'   =&gt; 'quebec-agent@example.com',
+        'Montreal' =&gt; $default_email,
+        'Toronto'  =&gt; $default_email,
+        'Other'    =&gt; $default_email,
+    ];
+
+    return $city_email_map[$city] ?? $default_email;
+}</code></pre>
+
+          <div class="note">
+            公开仓库中请使用示例邮箱，不要保存真实客户邮箱或公司内部邮箱。
+          </div>
+        </article>
+
+        <!-- 示例 5：安全排查 -->
+        <article class="code-card" data-category="security" data-tags="wordpress security mu-plugins shell malware php 安全 木马 可疑文件">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">安全排查</p>
+              <h2>[Security] 检查 mu-plugins 目录中的 PHP 文件</h2>
+            </div>
+            <span class="risk risk-medium">中风险</span>
+          </div>
+
+          <p class="desc">
+            用于服务器中快速查看 <code>wp-content/mu-plugins</code> 目录下的 PHP 文件，辅助排查可疑文件。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用位置：</strong>服务器 SSH</li>
+            <li><strong>代码类型：</strong>Shell</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>安全 / mu-plugins / 可疑文件</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>Shell</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-bash">find wp-content/mu-plugins -type f -name "*.php" -maxdepth 2 -print</code></pre>
+
+          <div class="note">
+            <code>mu-plugins</code> 是 WordPress 的必须使用插件目录，里面既可能有正常文件，也可能被攻击者利用，需要结合文件内容判断。
+          </div>
+        </article>
+
+        <!-- 示例 6：Elementor / CSS -->
+        <article class="code-card" data-category="elementor" data-tags="elementor css product images woocommerce thumbnails 样式 小图 产品图">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">Elementor</p>
+              <h2>[Elementor] 产品小图单行显示并允许横向滚动</h2>
+            </div>
+            <span class="risk risk-low">低风险</span>
+          </div>
+
+          <p class="desc">
+            用于处理产品图片组件中缩略图换行的问题，让小图保持单行并横向滚动。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用位置：</strong>Elementor 自定义 CSS / 主题 CSS</li>
+            <li><strong>代码类型：</strong>CSS</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>Elementor / 产品图片 / 缩略图</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>CSS</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-css">.woocommerce-product-gallery .flex-control-thumbs {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+}
+
+.woocommerce-product-gallery .flex-control-thumbs li {
+    flex: 0 0 auto;
+}</code></pre>
+
+          <div class="note">
+            不同主题或插件生成的类名可能不同，使用前需要先在浏览器开发者工具中确认实际结构。
+          </div>
+        </article>
+
+        <!-- 示例 7：服务器配置 -->
+        <article class="code-card" data-category="server" data-tags="wordpress server php nginx upload size 上传限制 服务器 配置">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">服务器配置</p>
+              <h2>[Server] PHP 上传文件大小配置参考</h2>
+            </div>
+            <span class="risk risk-medium">中风险</span>
+          </div>
+
+          <p class="desc">
+            用于记录 WordPress 上传图片、插件或主题时常见的 PHP 上传大小限制配置。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用文件：</strong>php.ini / 面板 PHP 设置</li>
+            <li><strong>代码类型：</strong>INI</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>PHP / 上传限制 / 服务器配置</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>INI</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-ini">upload_max_filesize = 64M
+post_max_size = 64M
+memory_limit = 256M
+max_execution_time = 300</code></pre>
+
+          <div class="note">
+            修改后通常需要重启 PHP-FPM 或在服务器面板中重新加载 PHP 配置。
+          </div>
+        </article>
+
+        <!-- 示例 8：前端 JS -->
+        <article class="code-card" data-category="frontend" data-tags="javascript css html frontend copy button 复制 交互">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">CSS / JS</p>
+              <h2>[JS] 简单的一键复制代码逻辑</h2>
+            </div>
+            <span class="risk risk-low">低风险</span>
+          </div>
+
+          <p class="desc">
+            用于普通 HTML 页面中的代码块复制按钮，可作为后续自定义交互的基础。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用文件：</strong>assets/js/main.js</li>
+            <li><strong>代码类型：</strong>JavaScript</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>JavaScript / 复制按钮 / 前端交互</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>JavaScript</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-js">document.querySelectorAll('.copy-btn').forEach((button) =&gt; {
+    button.addEventListener('click', async () =&gt; {
+        const code = button.closest('.code-card').querySelector('code').innerText;
+        await navigator.clipboard.writeText(code);
+        button.innerText = '已复制';
+    });
+});</code></pre>
+
+          <div class="note">
+            本项目的 <code>main.js</code> 已经内置了更完整的一键复制、搜索和分类筛选功能。
+          </div>
+        </article>
+
+      </section>
+
+      <section id="emptyState" class="empty-state" hidden>
+        没有找到匹配的代码片段。可以换一个关键词，或切换到“全部代码”。
+      </section>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>WordPress / WooCommerce 商城代码片段知识库 · v1.0.0</p>
+      <p>建议：每次正式修改网站前，先备份文件和数据库。</p>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
