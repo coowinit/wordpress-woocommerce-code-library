@@ -74,25 +74,6 @@ wordpress-woocommerce-code-library/
 
 [查看 WordPress 站点维护、性能优化与后台体验常用代码整理](docs/wordpress-maintenance-performance-snippets-v1.0.4.md)
 
-## v1.0.1 核心文档
-
-本版本新增 WooCommerce B2B 询价型商城主题的核心知识点整理，来源于 `Woo商城主题.zip`。
-
-主要整理内容：
-
-- Woo 商城主题 `mytheme` 的文件结构和职责边界
-- WooCommerce 模板覆盖：列表页、产品卡片、详情页
-- B2B 询价模式：Add to Quote → Quote List → 后台询盘管理
-- `coowin-quote-system` 插件的数据表、Ajax 接口和通用表单规范
-- `coowin-sample-pack` 样品包插件的样品选择逻辑
-- 变体色卡、场景图库、Swiper 兼容策略
-- 常见问题排查清单和改版测试清单
-
-详细文档：
-
-[查看 Woo 商城主题核心知识点整理](docs/woocommerce-theme-core-knowledge-v1.0.1.md)
-
-
 ## v1.0.3 核心文档
 
 本版本新增 WordPress 高频救急代码、模板标签、查询逻辑和常用开发片段整理，主要用于日常维护和快速复用。
@@ -133,6 +114,24 @@ wordpress-woocommerce-code-library/
 详细文档：
 
 [查看 WordPress 常用主题与小插件可复用代码整理](docs/wordpress-theme-plugin-reusable-code-v1.0.2.md)
+
+## v1.0.1 核心文档
+
+本版本新增 WooCommerce B2B 询价型商城主题的核心知识点整理，来源于 `Woo商城主题.zip`。
+
+主要整理内容：
+
+- Woo 商城主题 `mytheme` 的文件结构和职责边界
+- WooCommerce 模板覆盖：列表页、产品卡片、详情页
+- B2B 询价模式：Add to Quote → Quote List → 后台询盘管理
+- `coowin-quote-system` 插件的数据表、Ajax 接口和通用表单规范
+- `coowin-sample-pack` 样品包插件的样品选择逻辑
+- 变体色卡、场景图库、Swiper 兼容策略
+- 常见问题排查清单和改版测试清单
+
+详细文档：
+
+[查看 Woo 商城主题核心知识点整理](docs/woocommerce-theme-core-knowledge-v1.0.1.md)
 
 ## 新增代码片段的方法
 
