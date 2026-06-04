@@ -22,6 +22,7 @@
         <a class="button button-light" href="docs/woocommerce-theme-core-knowledge-v1.0.1.md">Woo 主题知识点</a>
         <a class="button button-light" href="docs/wordpress-theme-plugin-reusable-code-v1.0.2.md">常用主题代码</a>
         <a class="button button-light" href="docs/wordpress-practical-snippets-v1.0.3.md">高频函数速查</a>
+        <a class="button button-light" href="docs/wordpress-maintenance-performance-snippets-v1.0.4.md">维护优化代码</a>
         <a class="button button-primary" href="#code-list">浏览代码</a>
       </div>
     </div>
@@ -36,6 +37,7 @@
         <button class="filter-btn" data-filter="woocommerce">WooCommerce 商城</button>
         <button class="filter-btn" data-filter="theme">主题 / 插件架构</button>
         <button class="filter-btn" data-filter="common">高频函数 / 救急代码</button>
+        <button class="filter-btn" data-filter="maintenance">维护 / 性能优化</button>
         <button class="filter-btn" data-filter="elementor">Elementor</button>
         <button class="filter-btn" data-filter="form">表单 / 邮件</button>
         <button class="filter-btn" data-filter="database">数据库 SQL</button>
@@ -77,10 +79,11 @@
         <p>
           本页面适合上传到 GitHub Pages 作为在线查询页。新增代码时，建议统一记录：
           <strong>适用场景、适用文件、代码类型、风险等级、更新时间、标签和注意事项</strong>。
-          v1.0.1 已补充 Woo 商城主题核心知识点；v1.0.2 已补充普通 WordPress 主题与小插件的常用可复用代码；v1.0.3 已补充高频救急代码、模板标签和查询逻辑。详细文档见
+          v1.0.1 已补充 Woo 商城主题核心知识点；v1.0.2 已补充普通 WordPress 主题与小插件的常用可复用代码；v1.0.3 已补充高频救急代码、模板标签和查询逻辑；v1.0.4 已补充站点维护、性能优化、邮件和后台体验常用代码。详细文档见
           <a href="docs/woocommerce-theme-core-knowledge-v1.0.1.md"><strong>Woo 商城主题核心知识点整理</strong></a>、
           <a href="docs/wordpress-theme-plugin-reusable-code-v1.0.2.md"><strong>WordPress 常用主题与小插件可复用代码整理</strong></a>、
-          <a href="docs/wordpress-practical-snippets-v1.0.3.md"><strong>WordPress 高频救急代码与模板标签速查</strong></a>。
+          <a href="docs/wordpress-practical-snippets-v1.0.3.md"><strong>WordPress 高频救急代码与模板标签速查</strong></a>、
+          <a href="docs/wordpress-maintenance-performance-snippets-v1.0.4.md"><strong>WordPress 站点维护、性能优化与后台体验常用代码整理</strong></a>。
         </p>
         <p class="warning-text">
           公开仓库中不要保存数据库密码、后台账号、API Key、插件授权码、客户邮箱、服务器 IP 等敏感信息。
@@ -88,6 +91,449 @@
       </section>
 
       <section id="code-list" class="code-list">
+
+        <!-- v1.0.4：[Assets] 正确加载主题 CSS / JS 并自动刷新缓存 -->
+        <article class="code-card" data-category="maintenance" data-tags="wordpress assets enqueue wp_enqueue_scripts css js filemtime cache get_theme_file_uri get_theme_file_path 缓存 资源加载">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">维护 / 性能优化</p>
+              <h2>[Assets] 正确加载主题 CSS / JS 并自动刷新缓存</h2>
+            </div>
+            <span class="risk risk-low">低风险</span>
+          </div>
+
+          <p class="desc">
+            使用 wp_enqueue_scripts 正确加载主题资源，并用 filemtime() 自动刷新浏览器缓存。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用文件：</strong>functions.php</li>
+            <li><strong>代码类型：</strong>PHP</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>资源加载 / filemtime / 缓存刷新</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>PHP</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-php">function mytheme_enqueue_assets() {
+    $css_file = get_theme_file_path(&#x27;/assets/css/style.css&#x27;);
+    $js_file  = get_theme_file_path(&#x27;/assets/js/main.js&#x27;);
+
+    wp_enqueue_style(
+        &#x27;mytheme-style&#x27;,
+        get_theme_file_uri(&#x27;/assets/css/style.css&#x27;),
+        [],
+        file_exists($css_file) ? filemtime($css_file) : &#x27;1.0.0&#x27;
+    );
+
+    wp_enqueue_script(
+        &#x27;mytheme-main&#x27;,
+        get_theme_file_uri(&#x27;/assets/js/main.js&#x27;),
+        [&#x27;jquery&#x27;],
+        file_exists($js_file) ? filemtime($js_file) : &#x27;1.0.0&#x27;,
+        true
+    );
+}
+add_action(&#x27;wp_enqueue_scripts&#x27;, &#x27;mytheme_enqueue_assets&#x27;);</code></pre>
+
+          <div class="note">
+            适合主题开发长期复用。<code>get_theme_file_uri()</code> 获取 URL，<code>get_theme_file_path()</code> 获取服务器文件路径。
+          </div>
+        </article>
+
+        <!-- v1.0.4：[Performance] 只在指定页面加载 CSS / JS -->
+        <article class="code-card" data-category="maintenance" data-tags="wordpress performance conditional assets is_page is_singular css js 指定页面 性能优化">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">维护 / 性能优化</p>
+              <h2>[Performance] 只在指定页面加载 CSS / JS</h2>
+            </div>
+            <span class="risk risk-low">低风险</span>
+          </div>
+
+          <p class="desc">
+            只在联系页、产品详情页等指定页面加载专用资源，减少全站不必要的 CSS / JS。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用文件：</strong>functions.php</li>
+            <li><strong>代码类型：</strong>PHP</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>条件加载 / 性能优化 / 页面资源</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>PHP</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-php">function mytheme_conditional_assets() {
+    if (is_page(&#x27;contact&#x27;)) {
+        wp_enqueue_style(
+            &#x27;contact-style&#x27;,
+            get_theme_file_uri(&#x27;/assets/css/contact.css&#x27;),
+            [],
+            &#x27;1.0.0&#x27;
+        );
+
+        wp_enqueue_script(
+            &#x27;contact-form&#x27;,
+            get_theme_file_uri(&#x27;/assets/js/contact.js&#x27;),
+            [&#x27;jquery&#x27;],
+            &#x27;1.0.0&#x27;,
+            true
+        );
+    }
+
+    if (is_singular(&#x27;product&#x27;)) {
+        wp_enqueue_style(
+            &#x27;product-style&#x27;,
+            get_theme_file_uri(&#x27;/assets/css/product.css&#x27;),
+            [],
+            &#x27;1.0.0&#x27;
+        );
+    }
+}
+add_action(&#x27;wp_enqueue_scripts&#x27;, &#x27;mytheme_conditional_assets&#x27;);</code></pre>
+
+          <div class="note">
+            适合表单页、Swiper 页面、产品详情页、视频轮播页等。WooCommerce 产品页可结合 <code>is_product()</code> 使用。
+          </div>
+        </article>
+
+        <!-- v1.0.4：[Mail] 修改 WordPress 邮件发件人名称和邮箱 -->
+        <article class="code-card" data-category="maintenance" data-tags="wordpress mail wp_mail_from wp_mail_from_name email sender 邮件 发件人">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">维护 / 性能优化</p>
+              <h2>[Mail] 修改 WordPress 邮件发件人名称和邮箱</h2>
+            </div>
+            <span class="risk risk-low">低风险</span>
+          </div>
+
+          <p class="desc">
+            把 WordPress 默认邮件发件人改成公司名称和网站邮箱，提升邮件可信度和品牌一致性。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用文件：</strong>functions.php</li>
+            <li><strong>代码类型：</strong>PHP</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>邮件 / 发件人 / wp_mail_from</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>PHP</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-php">function mytheme_mail_from($email) {
+    return &#x27;noreply@example.com&#x27;;
+}
+add_filter(&#x27;wp_mail_from&#x27;, &#x27;mytheme_mail_from&#x27;);
+
+function mytheme_mail_from_name($name) {
+    return &#x27;Company Website&#x27;;
+}
+add_filter(&#x27;wp_mail_from_name&#x27;, &#x27;mytheme_mail_from_name&#x27;);</code></pre>
+
+          <div class="note">
+            公开仓库中使用占位邮箱。正式网站建议配置同域名邮箱，并检查 SPF、DKIM、DMARC。
+          </div>
+        </article>
+
+        <!-- v1.0.4：[Mail] 使用 wp_mail() 发送 HTML 格式邮件 -->
+        <article class="code-card" data-category="maintenance" data-tags="wordpress mail wp_mail html email wp_mail_content_type remove_filter html邮件">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">维护 / 性能优化</p>
+              <h2>[Mail] 使用 wp_mail() 发送 HTML 格式邮件</h2>
+            </div>
+            <span class="risk risk-medium">中风险</span>
+          </div>
+
+          <p class="desc">
+            让 WordPress 邮件支持 HTML 内容，例如标题、段落、表格和链接。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用文件：</strong>functions.php / 自定义插件</li>
+            <li><strong>代码类型：</strong>PHP</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>HTML 邮件 / wp_mail / content type</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>PHP</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-php">function mytheme_set_html_mail_content_type() {
+    return &#x27;text/html&#x27;;
+}
+
+function mytheme_send_html_mail($to, $subject, $html_message) {
+    add_filter(&#x27;wp_mail_content_type&#x27;, &#x27;mytheme_set_html_mail_content_type&#x27;);
+
+    $sent = wp_mail($to, $subject, $html_message);
+
+    remove_filter(&#x27;wp_mail_content_type&#x27;, &#x27;mytheme_set_html_mail_content_type&#x27;);
+
+    return $sent;
+}
+
+mytheme_send_html_mail(
+    &#x27;admin@example.com&#x27;,
+    &#x27;New Website Inquiry&#x27;,
+    &#x27;&lt;h2&gt;New Inquiry&lt;/h2&gt;&lt;p&gt;This is an HTML email.&lt;/p&gt;&#x27;
+);</code></pre>
+
+          <div class="note">
+            发送完成后必须 <code>remove_filter()</code>，避免影响其他插件或系统邮件。真实项目要做好字段清洗和邮箱校验。
+          </div>
+        </article>
+
+        <!-- v1.0.4：[Query] 使用 pre_get_posts 修改分类页文章数量 -->
+        <article class="code-card" data-category="maintenance" data-tags="wordpress pre_get_posts main query category posts_per_page archive search 主查询 分类页 查询">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">维护 / 性能优化</p>
+              <h2>[Query] 使用 pre_get_posts 修改分类页文章数量</h2>
+            </div>
+            <span class="risk risk-medium">中风险</span>
+          </div>
+
+          <p class="desc">
+            通过 pre_get_posts 修改 WordPress 主查询，例如控制分类页、搜索页、归档页文章数量。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用文件：</strong>functions.php</li>
+            <li><strong>代码类型：</strong>PHP</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>主查询 / pre_get_posts / 分类页</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>PHP</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-php">function mytheme_category_posts_per_page($query) {
+    if (!is_admin() &amp;&amp; $query-&gt;is_main_query() &amp;&amp; $query-&gt;is_category()) {
+        $query-&gt;set(&#x27;posts_per_page&#x27;, 12);
+    }
+}
+add_action(&#x27;pre_get_posts&#x27;, &#x27;mytheme_category_posts_per_page&#x27;);</code></pre>
+
+          <div class="note">
+            必须判断 <code>!is_admin()</code> 和 <code>$query-&gt;is_main_query()</code>，避免影响后台或其他自定义查询。
+          </div>
+        </article>
+
+        <!-- v1.0.4：[Security] 禁用 WordPress XML-RPC -->
+        <article class="code-card" data-category="maintenance" data-tags="wordpress security xmlrpc xml-rpc pingback wp_headers 安全 禁用">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">维护 / 性能优化</p>
+              <h2>[Security] 禁用 WordPress XML-RPC</h2>
+            </div>
+            <span class="risk risk-medium">中风险</span>
+          </div>
+
+          <p class="desc">
+            用于减少 XML-RPC 相关的恶意请求、暴力破解和 Pingback 风险。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用文件：</strong>functions.php</li>
+            <li><strong>代码类型：</strong>PHP</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>安全 / XML-RPC / Pingback</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>PHP</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-php">add_filter(&#x27;xmlrpc_enabled&#x27;, &#x27;__return_false&#x27;);
+
+function mytheme_remove_x_pingback_header($headers) {
+    unset($headers[&#x27;X-Pingback&#x27;]);
+    return $headers;
+}
+add_filter(&#x27;wp_headers&#x27;, &#x27;mytheme_remove_x_pingback_header&#x27;);</code></pre>
+
+          <div class="note">
+            如果网站依赖 Jetpack、远程发布、WordPress 手机 App 或第三方同步服务，禁用前必须测试。
+          </div>
+        </article>
+
+        <!-- v1.0.4：[Admin] 隐藏非管理员前台顶部工具栏 -->
+        <article class="code-card" data-category="maintenance" data-tags="wordpress admin bar show_admin_bar current_user_can administrator 用户 会员 顶部工具栏">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">维护 / 性能优化</p>
+              <h2>[Admin] 隐藏非管理员前台顶部工具栏</h2>
+            </div>
+            <span class="risk risk-low">低风险</span>
+          </div>
+
+          <p class="desc">
+            普通用户、客户账号或会员登录前台时，隐藏 WordPress 顶部黑色工具栏。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用文件：</strong>functions.php</li>
+            <li><strong>代码类型：</strong>PHP</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>后台体验 / admin bar / 用户角色</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>PHP</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-php">function mytheme_hide_admin_bar_for_non_admins() {
+    if (!current_user_can(&#x27;administrator&#x27;)) {
+        show_admin_bar(false);
+    }
+}
+add_action(&#x27;after_setup_theme&#x27;, &#x27;mytheme_hide_admin_bar_for_non_admins&#x27;);</code></pre>
+
+          <div class="note">
+            适合 WooCommerce 客户账号、会员系统、经销商账号等前台登录场景。
+          </div>
+        </article>
+
+        <!-- v1.0.4：[Admin] 自定义 WordPress 登录页 Logo 和链接 -->
+        <article class="code-card" data-category="maintenance" data-tags="wordpress login logo login_enqueue_scripts login_headerurl admin 登录页 logo 品牌化">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">维护 / 性能优化</p>
+              <h2>[Admin] 自定义 WordPress 登录页 Logo 和链接</h2>
+            </div>
+            <span class="risk risk-low">低风险</span>
+          </div>
+
+          <p class="desc">
+            把 WordPress 默认登录页 Logo 换成公司 Logo，并将 Logo 链接改为网站首页。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用文件：</strong>functions.php</li>
+            <li><strong>代码类型：</strong>PHP / CSS</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>登录页 / Logo / 品牌化</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>PHP</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-php">function mytheme_custom_login_logo() {
+    ?&gt;
+    &lt;style&gt;
+        .login h1 a {
+            background-image: url(&#x27;&lt;?php echo esc_url(get_theme_file_uri(&#x27;/assets/images/login-logo.png&#x27;)); ?&gt;&#x27;);
+            width: 220px;
+            height: 80px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+    &lt;/style&gt;
+    &lt;?php
+}
+add_action(&#x27;login_enqueue_scripts&#x27;, &#x27;mytheme_custom_login_logo&#x27;);
+
+function mytheme_custom_login_logo_url() {
+    return home_url(&#x27;/&#x27;);
+}
+add_filter(&#x27;login_headerurl&#x27;, &#x27;mytheme_custom_login_logo_url&#x27;);</code></pre>
+
+          <div class="note">
+            需要提前把 Logo 图片放到 <code>assets/images/login-logo.png</code>。登录页样式建议保持简单。
+          </div>
+        </article>
+
+        <!-- v1.0.4：[Media] 只允许管理员上传 SVG -->
+        <article class="code-card" data-category="maintenance" data-tags="wordpress media svg upload_mimes administrator mime 上传 SVG 媒体库">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">维护 / 性能优化</p>
+              <h2>[Media] 只允许管理员上传 SVG</h2>
+            </div>
+            <span class="risk risk-medium">中风险</span>
+          </div>
+
+          <p class="desc">
+            允许管理员上传 SVG 图标文件，用于 Logo、图标和品牌元素。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用文件：</strong>functions.php</li>
+            <li><strong>代码类型：</strong>PHP</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>媒体库 / SVG / upload_mimes</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>PHP</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-php">function mytheme_allow_svg_upload_for_admins($mimes) {
+    if (current_user_can(&#x27;administrator&#x27;)) {
+        $mimes[&#x27;svg&#x27;] = &#x27;image/svg+xml&#x27;;
+    }
+
+    return $mimes;
+}
+add_filter(&#x27;upload_mimes&#x27;, &#x27;mytheme_allow_svg_upload_for_admins&#x27;);</code></pre>
+
+          <div class="note">
+            SVG 可能包含脚本风险。建议只允许管理员上传，并尽量配合 SVG 清理工具或插件。
+          </div>
+        </article>
+
+        <!-- v1.0.4：[Maintenance] 临时开启网站维护模式 -->
+        <article class="code-card" data-category="maintenance" data-tags="wordpress maintenance mode wp_die template_redirect 503 维护模式 网站维护">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">维护 / 性能优化</p>
+              <h2>[Maintenance] 临时开启网站维护模式</h2>
+            </div>
+            <span class="risk risk-high">高风险</span>
+          </div>
+
+          <p class="desc">
+            网站改版、更新主题或修复功能时，临时对普通访客显示维护提示，管理员仍可访问。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用文件：</strong>functions.php</li>
+            <li><strong>代码类型：</strong>PHP</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>维护模式 / wp_die / 503</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>PHP</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-php">function mytheme_maintenance_mode() {
+    if (!current_user_can(&#x27;administrator&#x27;) &amp;&amp; !wp_doing_ajax()) {
+        wp_die(
+            &#x27;&lt;h1&gt;网站维护中&lt;/h1&gt;&lt;p&gt;网站正在更新，请稍后再访问。&lt;/p&gt;&#x27;,
+            &#x27;网站维护中&#x27;,
+            [&#x27;response&#x27; =&gt; 503]
+        );
+    }
+}
+add_action(&#x27;template_redirect&#x27;, &#x27;mytheme_maintenance_mode&#x27;);</code></pre>
+
+          <div class="note">
+            维护完成后必须删除或注释这段代码，避免影响正常访客访问。
+          </div>
+        </article>
 
         <!-- v1.0.3：[Recovery] 忘记管理员密码时临时新增管理员账号 -->
         <article class="code-card" data-category="common" data-tags="wordpress recovery admin password ftp functions.php wp_create_user WP_User set_role 管理员 密码 找回 救急">
@@ -1778,7 +2224,7 @@ add_filter(&#x27;get_the_archive_title_prefix&#x27;, &#x27;__return_false&#x27;)
 
   <footer class="site-footer">
     <div class="container">
-      <p>WordPress / WooCommerce 商城代码片段知识库 · v1.0.3</p>
+      <p>WordPress / WooCommerce 商城代码片段知识库 · v1.0.4</p>
       <p>建议：每次正式修改网站前，先备份文件和数据库。</p>
     </div>
   </footer>

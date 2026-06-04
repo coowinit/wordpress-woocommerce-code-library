@@ -17,7 +17,8 @@ wordpress-woocommerce-code-library/
 ├── docs/
 │   ├── woocommerce-theme-core-knowledge-v1.0.1.md
 │   ├── wordpress-theme-plugin-reusable-code-v1.0.2.md
-│   └── wordpress-practical-snippets-v1.0.3.md
+│   ├── wordpress-practical-snippets-v1.0.3.md
+│   └── wordpress-maintenance-performance-snippets-v1.0.4.md
 └── assets/
     ├── css/
     │   └── style.css
@@ -42,6 +43,7 @@ wordpress-woocommerce-code-library/
 - WooCommerce 商城
 - 主题 / 插件架构
 - 高频函数 / 救急代码
+- 维护 / 性能优化
 - Elementor
 - 表单 / 邮件
 - 数据库 SQL
@@ -49,6 +51,28 @@ wordpress-woocommerce-code-library/
 - 服务器配置
 - CSS / JS
 
+
+
+## v1.0.4 核心文档
+
+本版本新增 WordPress 站点维护、性能优化、邮件发送、后台体验、安全加固和临时维护模式中的常用代码片段。
+
+主要整理内容：
+
+- 正确加载主题 CSS / JS，并使用 `filemtime()` 自动刷新缓存
+- 只在指定页面加载 CSS / JS，减少不必要的全站资源加载
+- 修改 WordPress 邮件发件人名称和邮箱
+- 使用 `wp_mail()` 发送 HTML 格式邮件
+- 使用 `pre_get_posts` 修改分类页、搜索页等主查询
+- 禁用 XML-RPC，并移除 `X-Pingback` 响应头
+- 隐藏非管理员前台顶部工具栏
+- 自定义 WordPress 登录页 Logo 和链接
+- 只允许管理员上传 SVG，并补充安全提醒
+- 临时开启网站维护模式，管理员可继续访问
+
+详细文档：
+
+[查看 WordPress 站点维护、性能优化与后台体验常用代码整理](docs/wordpress-maintenance-performance-snippets-v1.0.4.md)
 
 ## v1.0.1 核心文档
 
@@ -178,6 +202,7 @@ wordpress-woocommerce-code-library/
 | WooCommerce 商城 | `woocommerce` |
 | 主题 / 插件架构 | `theme` |
 | 高频函数 / 救急代码 | `common` |
+| 维护 / 性能优化 | `maintenance` |
 | Elementor | `elementor` |
 | 表单 / 邮件 | `form` |
 | 数据库 SQL | `database` |
@@ -226,6 +251,22 @@ $admin_email = 'company@example.com';
 ```
 
 ## 更新记录
+
+### v1.0.4
+
+- 新增 WordPress 站点维护、性能优化与后台体验常用代码整理。
+- 新增 `docs/wordpress-maintenance-performance-snippets-v1.0.4.md` 详细文档。
+- 补充正确加载主题 CSS / JS，并使用 `filemtime()` 自动刷新浏览器缓存的代码。
+- 补充只在指定页面加载 CSS / JS 的条件加载写法。
+- 补充修改 WordPress 邮件发件人名称和邮箱的代码。
+- 补充使用 `wp_mail()` 发送 HTML 格式邮件的安全写法。
+- 补充使用 `pre_get_posts` 修改主查询的常见逻辑。
+- 补充禁用 XML-RPC 和移除 `X-Pingback` 响应头的安全加固代码。
+- 补充隐藏非管理员前台顶部工具栏的后台体验代码。
+- 补充自定义 WordPress 登录页 Logo 和链接的品牌化代码。
+- 补充只允许管理员上传 SVG 的媒体库扩展代码，并加入安全提醒。
+- 补充临时开启网站维护模式的代码。
+- 首页新增“维护 / 性能优化”分类和 10 个相关代码卡片。
 
 ### v1.0.3
 
