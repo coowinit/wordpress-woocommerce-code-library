@@ -20,6 +20,7 @@
       <div class="header-actions">
         <a class="button button-light" href="README.md">查看 README</a>
         <a class="button button-light" href="docs/woocommerce-theme-core-knowledge-v1.0.1.md">Woo 主题知识点</a>
+        <a class="button button-light" href="docs/wordpress-theme-plugin-reusable-code-v1.0.2.md">常用主题代码</a>
         <a class="button button-primary" href="#code-list">浏览代码</a>
       </div>
     </div>
@@ -74,8 +75,9 @@
         <p>
           本页面适合上传到 GitHub Pages 作为在线查询页。新增代码时，建议统一记录：
           <strong>适用场景、适用文件、代码类型、风险等级、更新时间、标签和注意事项</strong>。
-          v1.0.1 已补充 Woo 商城主题核心知识点，详细文档见
-          <a href="docs/woocommerce-theme-core-knowledge-v1.0.1.md"><strong>Woo 商城主题核心知识点整理</strong></a>。
+          v1.0.1 已补充 Woo 商城主题核心知识点；v1.0.2 已补充普通 WordPress 主题与小插件的常用可复用代码。详细文档见
+          <a href="docs/woocommerce-theme-core-knowledge-v1.0.1.md"><strong>Woo 商城主题核心知识点整理</strong></a>、
+          <a href="docs/wordpress-theme-plugin-reusable-code-v1.0.2.md"><strong>WordPress 常用主题与小插件可复用代码整理</strong></a>。
         </p>
         <p class="warning-text">
           公开仓库中不要保存数据库密码、后台账号、API Key、插件授权码、客户邮箱、服务器 IP 等敏感信息。
@@ -747,6 +749,432 @@ attrs[&#x27;sample_colour_&#x27; + String(index + 1)] = label || value;</code></
           </div>
         </article>
 
+        <!-- v1.0.2：普通 WordPress 主题 / 插件可复用代码 -->
+        <article class="code-card" data-category="theme" data-tags="v1.0.2 wordpress theme structure header footer functions template taxonomy single page 普通主题 文件结构">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">主题 / 插件架构</p>
+              <h2>[v1.0.2] 普通 WordPress 主题文件地图</h2>
+            </div>
+            <span class="risk risk-low">低风险</span>
+          </div>
+
+          <p class="desc">
+            根据 mytheme 主题整理出的普通 WordPress 企业站常用文件结构，适合后续做主题复盘或新项目搭建参考。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用位置：</strong>主题根目录</li>
+            <li><strong>代码类型：</strong>目录结构</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>主题结构 / 模板文件 / 可维护性</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>text</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-text">mytheme/
+├── style.css                  # 主题声明
+├── functions.php              # 核心功能逻辑
+├── header.php / footer.php    # 公共头部与底部
+├── meta-cssjs.php             # 头部 CSS、字体、统计代码
+├── body-js.php                # 底部 JS、菜单、客服、GTM
+├── custom-shortcodes.php      # 常用短代码
+├── page-*.php                 # 独立页面模板
+├── single-products.php        # 产品详情页模板
+├── taxonomy-product_cat.php   # 产品分类页模板
+└── css/ js/ images/ svg/      # 前端资源</code></pre>
+
+          <div class="note">
+            建议把“数据结构和业务逻辑”逐步拆到插件中，把主题保留为展示层，这样以后换主题时更安全。
+          </div>
+        </article>
+
+        <!-- v1.0.2：普通 WordPress 主题 / 插件可复用代码 -->
+        <article class="code-card" data-category="theme" data-tags="v1.0.2 wordpress plugin settings api page settings get_option 联系方式 后台设置 小插件">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">主题 / 插件架构</p>
+              <h2>[v1.0.2] 后台 Page Settings 小插件模板</h2>
+            </div>
+            <span class="risk risk-medium">中风险</span>
+          </div>
+
+          <p class="desc">
+            用于把联系人、电话、邮箱、社媒链接、Banner 等全站通用信息集中放到后台设置页，前台通过 get_option 调用。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用文件：</strong>自定义小插件</li>
+            <li><strong>代码类型：</strong>PHP / Settings API</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>后台设置 / get_option / 小插件</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>php</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-php">class My_Page_Settings {
+    public function __construct() {
+        add_action(&#x27;admin_menu&#x27;, [$this, &#x27;add_admin_menu&#x27;]);
+        add_action(&#x27;admin_init&#x27;, [$this, &#x27;init_settings&#x27;]);
+    }
+
+    public function add_admin_menu() {
+        add_menu_page(&#x27;Page Settings&#x27;, &#x27;Page Settings&#x27;, &#x27;manage_options&#x27;, &#x27;page_settings&#x27;, [$this, &#x27;page_layout&#x27;]);
+    }
+
+    public function init_settings() {
+        register_setting(&#x27;settings_group&#x27;, &#x27;settings_name&#x27;);
+        add_settings_section(&#x27;settings_section&#x27;, &#x27;&#x27;, &#x27;__return_false&#x27;, &#x27;settings_name&#x27;);
+        add_settings_field(&#x27;phoneli&#x27;, &#x27;联系电话&#x27;, [$this, &#x27;render_text_field&#x27;], &#x27;settings_name&#x27;, &#x27;settings_section&#x27;, [&#x27;id&#x27; =&gt; &#x27;phoneli&#x27;]);
+    }
+
+    public function render_text_field($args) {
+        $options = get_option(&#x27;settings_name&#x27;);
+        $id = $args[&#x27;id&#x27;];
+        echo &#x27;&lt;input type=&quot;text&quot; name=&quot;settings_name[&#x27; . esc_attr($id) . &#x27;]&quot; value=&quot;&#x27; . esc_attr($options[$id] ?? &#x27;&#x27;) . &#x27;&quot;&gt;&#x27;;
+    }
+}</code></pre>
+
+          <div class="note">
+            权限建议优先使用 <code>manage_options</code>，除非明确需要编辑人员也能修改全站设置。
+          </div>
+        </article>
+
+        <!-- v1.0.2：普通 WordPress 主题 / 插件可复用代码 -->
+        <article class="code-card" data-category="wordpress" data-tags="v1.0.2 wordpress custom post type register_post_type taxonomy register_taxonomy products downloads faqs distributors">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">WordPress 基础</p>
+              <h2>[v1.0.2] 自定义文章类型 + 分类法模板</h2>
+            </div>
+            <span class="risk risk-medium">中风险</span>
+          </div>
+
+          <p class="desc">
+            适用于产品、下载资料、FAQ、Instagram 动态、VR 视频、经销商网络等内容模块。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用文件：</strong>functions.php 或独立插件</li>
+            <li><strong>代码类型：</strong>PHP</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>CPT / Taxonomy / 内容结构</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>php</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-php">add_action(&#x27;init&#x27;, function () {
+    register_post_type(&#x27;products&#x27;, [
+        &#x27;labels&#x27; =&gt; [&#x27;name&#x27; =&gt; &#x27;Products&#x27;, &#x27;singular_name&#x27; =&gt; &#x27;Product&#x27;],
+        &#x27;public&#x27; =&gt; true,
+        &#x27;has_archive&#x27; =&gt; true,
+        &#x27;menu_icon&#x27; =&gt; &#x27;dashicons-products&#x27;,
+        &#x27;supports&#x27; =&gt; [&#x27;title&#x27;, &#x27;editor&#x27;, &#x27;thumbnail&#x27;, &#x27;excerpt&#x27;],
+        &#x27;rewrite&#x27; =&gt; [&#x27;slug&#x27; =&gt; &#x27;products&#x27;],
+        &#x27;show_in_rest&#x27; =&gt; true,
+    ]);
+
+    register_taxonomy(&#x27;product_cat&#x27;, [&#x27;products&#x27;], [
+        &#x27;hierarchical&#x27; =&gt; true,
+        &#x27;public&#x27; =&gt; true,
+        &#x27;show_admin_column&#x27; =&gt; true,
+        &#x27;rewrite&#x27; =&gt; [&#x27;slug&#x27; =&gt; &#x27;product-cat&#x27;],
+        &#x27;show_in_rest&#x27; =&gt; true,
+    ]);
+});</code></pre>
+
+          <div class="note">
+            长期复用时更建议放到功能插件里，不建议完全绑定在主题中。
+          </div>
+        </article>
+
+        <!-- v1.0.2：普通 WordPress 主题 / 插件可复用代码 -->
+        <article class="code-card" data-category="wordpress" data-tags="v1.0.2 wordpress term meta taxonomy seo title page desc wp_editor get_term_meta product_cat">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">WordPress 基础</p>
+              <h2>[v1.0.2] 分类页 SEO 标题和页面说明字段</h2>
+            </div>
+            <span class="risk risk-medium">中风险</span>
+          </div>
+
+          <p class="desc">
+            给产品分类等 taxonomy 增加 SEO Title 和富文本页面说明，适合分类页底部说明、SEO 内容和落地页介绍。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用文件：</strong>functions.php 或小插件</li>
+            <li><strong>代码类型：</strong>PHP</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>Term Meta / 分类字段 / SEO</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>php</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-php">add_action(&#x27;product_cat_edit_form_fields&#x27;, function ($term) {
+    $seotitle = get_term_meta($term-&gt;term_id, &#x27;seotitle&#x27;, true);
+    $pagedesc = get_term_meta($term-&gt;term_id, &#x27;pagedesc&#x27;, true);
+
+    echo &#x27;&lt;tr&gt;&lt;th&gt;&lt;label&gt;SEO Title&lt;/label&gt;&lt;/th&gt;&lt;td&gt;&#x27;;
+    echo &#x27;&lt;input type=&quot;text&quot; name=&quot;seotitle&quot; value=&quot;&#x27; . esc_attr($seotitle) . &#x27;&quot;&gt;&#x27;;
+    echo &#x27;&lt;/td&gt;&lt;/tr&gt;&#x27;;
+
+    echo &#x27;&lt;tr&gt;&lt;th&gt;&lt;label&gt;Page Text&lt;/label&gt;&lt;/th&gt;&lt;td&gt;&#x27;;
+    wp_editor($pagedesc, &#x27;pagedesc&#x27;, [&#x27;textarea_rows&#x27; =&gt; 5]);
+    echo &#x27;&lt;/td&gt;&lt;/tr&gt;&#x27;;
+});
+
+add_action(&#x27;edited_product_cat&#x27;, function ($term_id) {
+    update_term_meta($term_id, &#x27;seotitle&#x27;, sanitize_text_field($_POST[&#x27;seotitle&#x27;] ?? &#x27;&#x27;));
+    update_term_meta($term_id, &#x27;pagedesc&#x27;, wp_kses_post($_POST[&#x27;pagedesc&#x27;] ?? &#x27;&#x27;));
+});</code></pre>
+
+          <div class="note">
+            如果要支持新增分类页面，也需要同步挂载 <code>product_cat_add_form_fields</code> 和 <code>created_product_cat</code>。
+          </div>
+        </article>
+
+        <!-- v1.0.2：普通 WordPress 主题 / 插件可复用代码 -->
+        <article class="code-card" data-category="wordpress" data-tags="v1.0.2 wordpress metabox custom fields media uploader wp_enqueue_media post meta 产品图片 PDF VR二维码">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">WordPress 基础</p>
+              <h2>[v1.0.2] 自定义字段 Metabox + 媒体上传</h2>
+            </div>
+            <span class="risk risk-medium">中风险</span>
+          </div>
+
+          <p class="desc">
+            用于给自定义产品增加产品图、PDF ID、VR 链接、二维码等字段，是产品型企业站最常用的后台扩展模式。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用文件：</strong>functions.php 或功能插件</li>
+            <li><strong>代码类型：</strong>PHP</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>Meta Box / 媒体上传 / 产品字段</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>php</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-php">add_action(&#x27;add_meta_boxes&#x27;, function () {
+    add_meta_box(&#x27;product_more_fields&#x27;, &#x27;More Product Fields&#x27;, &#x27;my_product_fields_callback&#x27;, &#x27;products&#x27;);
+});
+
+function my_product_fields_callback($post) {
+    wp_nonce_field(&#x27;save_product_more_fields&#x27;, &#x27;product_more_fields_nonce&#x27;);
+    $pic01 = get_post_meta($post-&gt;ID, &#x27;product_pic01&#x27;, true);
+    echo &#x27;&lt;input type=&quot;text&quot; class=&quot;regular-text&quot; name=&quot;product_pic01&quot; value=&quot;&#x27; . esc_attr($pic01) . &#x27;&quot;&gt;&#x27;;
+}
+
+add_action(&#x27;save_post_products&#x27;, function ($post_id) {
+    if (!isset($_POST[&#x27;product_more_fields_nonce&#x27;]) || !wp_verify_nonce($_POST[&#x27;product_more_fields_nonce&#x27;], &#x27;save_product_more_fields&#x27;)) {
+        return;
+    }
+    update_post_meta($post_id, &#x27;product_pic01&#x27;, esc_url_raw($_POST[&#x27;product_pic01&#x27;] ?? &#x27;&#x27;));
+});</code></pre>
+
+          <div class="note">
+            保存字段时建议加 nonce、权限检查和字段清洗；URL 用 <code>esc_url_raw</code>，普通文本用 <code>sanitize_text_field</code>。
+          </div>
+        </article>
+
+        <!-- v1.0.2：普通 WordPress 主题 / 插件可复用代码 -->
+        <article class="code-card" data-category="wordpress" data-tags="v1.0.2 wordpress gallery metabox multiple images sortable wp.media jquery-ui-sortable instagram 项目图库">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">WordPress 基础</p>
+              <h2>[v1.0.2] 多图上传 + 拖拽排序图库字段</h2>
+            </div>
+            <span class="risk risk-medium">中风险</span>
+          </div>
+
+          <p class="desc">
+            适合项目案例、Instagram 动态、工程图片、证书图库等需要多图管理和排序的内容模块。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用文件：</strong>functions.php 或功能插件</li>
+            <li><strong>代码类型：</strong>PHP / JS</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>图库字段 / 多图上传 / 拖拽排序</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>php</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-php">add_action(&#x27;admin_enqueue_scripts&#x27;, function ($hook) {
+    if ($hook !== &#x27;post.php&#x27; &amp;&amp; $hook !== &#x27;post-new.php&#x27;) return;
+    $screen = get_current_screen();
+    if (!$screen || $screen-&gt;post_type !== &#x27;insfeeds&#x27;) return;
+
+    wp_enqueue_media();
+    wp_enqueue_script(&#x27;jquery-ui-sortable&#x27;);
+});
+
+add_action(&#x27;save_post&#x27;, function ($post_id) {
+    $ids = isset($_POST[&#x27;gallery_images&#x27;]) ? (array) $_POST[&#x27;gallery_images&#x27;] : [];
+    $ids = array_values(array_unique(array_map(&#x27;absint&#x27;, $ids)));
+    $ids = array_values(array_filter($ids, &#x27;wp_attachment_is_image&#x27;));
+    update_post_meta($post_id, &#x27;_gallery_images&#x27;, $ids);
+});</code></pre>
+
+          <div class="note">
+            前端 JS 负责打开媒体库、追加图片、删除图片和排序；保存时只保留图片附件 ID。
+          </div>
+        </article>
+
+        <!-- v1.0.2：普通 WordPress 主题 / 插件可复用代码 -->
+        <article class="code-card" data-category="form" data-tags="v1.0.2 wordpress ajax form wp_mail admin-ajax nonce smtp 表单 邮件 联系我们 计算器 展会">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">表单 / 邮件</p>
+              <h2>[v1.0.2] Ajax 表单邮件处理模板</h2>
+            </div>
+            <span class="risk risk-medium">中风险</span>
+          </div>
+
+          <p class="desc">
+            适用于联系表单、配件计算器结果、展会报名、经销商申请等自定义表单提交。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用文件：</strong>功能插件或 functions.php</li>
+            <li><strong>代码类型：</strong>PHP</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>Ajax / wp_mail / 表单处理</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>php</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-php">add_action(&#x27;wp_ajax_send_custom_form&#x27;, &#x27;my_send_custom_form&#x27;);
+add_action(&#x27;wp_ajax_nopriv_send_custom_form&#x27;, &#x27;my_send_custom_form&#x27;);
+
+function my_send_custom_form() {
+    check_ajax_referer(&#x27;custom_form_nonce&#x27;, &#x27;nonce&#x27;);
+
+    $name = sanitize_text_field($_POST[&#x27;name&#x27;] ?? &#x27;&#x27;);
+    $email = sanitize_email($_POST[&#x27;email&#x27;] ?? &#x27;&#x27;);
+    $message = sanitize_textarea_field($_POST[&#x27;message&#x27;] ?? &#x27;&#x27;);
+
+    if (!$name || !$email) {
+        wp_send_json_error([&#x27;msg&#x27; =&gt; &#x27;Required fields are missing.&#x27;]);
+    }
+
+    $to = &#x27;company@example.com&#x27;;
+    $subject = &#x27;New Website Inquiry&#x27;;
+    $body = &#x27;&lt;p&gt;&lt;strong&gt;Name:&lt;/strong&gt; &#x27; . esc_html($name) . &#x27;&lt;/p&gt;&#x27;;
+    $body .= &#x27;&lt;p&gt;&lt;strong&gt;Email:&lt;/strong&gt; &#x27; . esc_html($email) . &#x27;&lt;/p&gt;&#x27;;
+    $body .= &#x27;&lt;p&gt;&lt;strong&gt;Message:&lt;/strong&gt;&lt;br&gt;&#x27; . nl2br(esc_html($message)) . &#x27;&lt;/p&gt;&#x27;;
+
+    $headers = [&#x27;Content-Type: text/html; charset=UTF-8&#x27;];
+    wp_mail($to, $subject, $body, $headers) ? wp_send_json_success() : wp_send_json_error();
+}</code></pre>
+
+          <div class="note">
+            真实邮箱、SMTP 用户名和授权码不要写入公开仓库；建议放到邮件插件、服务器配置或环境变量。
+          </div>
+        </article>
+
+        <!-- v1.0.2：普通 WordPress 主题 / 插件可复用代码 -->
+        <article class="code-card" data-category="wordpress" data-tags="v1.0.2 wordpress pre_get_posts posts_per_page search author tag date taxonomy archive pagination 每页数量">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">WordPress 基础</p>
+              <h2>[v1.0.2] 统一设置归档页每页数量</h2>
+            </div>
+            <span class="risk risk-low">低风险</span>
+          </div>
+
+          <p class="desc">
+            用于统一搜索页、作者页、标签页、日期归档页、产品分类页的每页显示数量。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用文件：</strong>functions.php</li>
+            <li><strong>代码类型：</strong>PHP</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>pre_get_posts / 分页 / 归档页</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>php</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-php">add_action(&#x27;pre_get_posts&#x27;, function ($query) {
+    if (is_admin() || !$query-&gt;is_main_query()) {
+        return;
+    }
+
+    if ($query-&gt;is_search() || $query-&gt;is_author() || $query-&gt;is_tag() || $query-&gt;is_date()) {
+        $query-&gt;set(&#x27;posts_per_page&#x27;, 9);
+    }
+
+    if (is_tax(&#x27;product_cat&#x27;) || is_post_type_archive(&#x27;products&#x27;)) {
+        $query-&gt;set(&#x27;posts_per_page&#x27;, 9);
+    }
+});</code></pre>
+
+          <div class="note">
+            一定要加 <code>!is_admin()</code> 和 <code>is_main_query()</code>，避免影响后台列表和其他二次查询。
+          </div>
+        </article>
+
+        <!-- v1.0.2：普通 WordPress 主题 / 插件可复用代码 -->
+        <article class="code-card" data-category="security" data-tags="v1.0.2 wordpress cleanup wp_head remove_action emoji generator feed rest api shortlink 安全优化 头部清理">
+          <div class="code-card-header">
+            <div>
+              <p class="card-category">安全排查</p>
+              <h2>[v1.0.2] WordPress 头部清理代码</h2>
+            </div>
+            <span class="risk risk-medium">中风险</span>
+          </div>
+
+          <p class="desc">
+            用于减少 WordPress 默认输出的部分头部标签，例如版本信息、emoji、feed、短链接和 REST API 链接。
+          </p>
+
+          <ul class="meta">
+            <li><strong>适用文件：</strong>functions.php</li>
+            <li><strong>代码类型：</strong>PHP</li>
+            <li><strong>更新时间：</strong>2026-06-04</li>
+            <li><strong>标签：</strong>wp_head / 清理 / 安全优化</li>
+          </ul>
+
+          <div class="code-toolbar">
+            <span>php</span>
+            <button class="copy-btn" type="button">复制代码</button>
+          </div>
+          <pre><code class="language-php">remove_action(&#x27;wp_head&#x27;, &#x27;wp_shortlink_wp_head&#x27;);
+remove_action(&#x27;wp_head&#x27;, &#x27;wp_generator&#x27;);
+remove_action(&#x27;wp_head&#x27;, &#x27;feed_links&#x27;, 2);
+remove_action(&#x27;wp_head&#x27;, &#x27;feed_links_extra&#x27;, 3);
+remove_action(&#x27;wp_head&#x27;, &#x27;rsd_link&#x27;);
+remove_action(&#x27;wp_head&#x27;, &#x27;wlwmanifest_link&#x27;);
+remove_action(&#x27;wp_head&#x27;, &#x27;print_emoji_detection_script&#x27;, 7);
+remove_action(&#x27;wp_print_styles&#x27;, &#x27;print_emoji_styles&#x27;);
+remove_action(&#x27;wp_head&#x27;, &#x27;rest_output_link_wp_head&#x27;, 10);
+remove_action(&#x27;wp_head&#x27;, &#x27;wp_resource_hints&#x27;, 2, 99);
+add_filter(&#x27;get_the_archive_title_prefix&#x27;, &#x27;__return_false&#x27;);</code></pre>
+
+          <div class="note">
+            如果网站依赖 RSS、REST API、外部编辑器或 SEO 插件输出，不要直接整段复制，需要按功能逐项启用。
+          </div>
+        </article>
+
       </section>
 
       <section id="emptyState" class="empty-state" hidden>
@@ -757,7 +1185,7 @@ attrs[&#x27;sample_colour_&#x27; + String(index + 1)] = label || value;</code></
 
   <footer class="site-footer">
     <div class="container">
-      <p>WordPress / WooCommerce 商城代码片段知识库 · v1.0.1</p>
+      <p>WordPress / WooCommerce 商城代码片段知识库 · v1.0.2</p>
       <p>建议：每次正式修改网站前，先备份文件和数据库。</p>
     </div>
   </footer>

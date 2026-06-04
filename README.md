@@ -15,7 +15,8 @@ wordpress-woocommerce-code-library/
 ├── index.html
 ├── README.md
 ├── docs/
-│   └── woocommerce-theme-core-knowledge-v1.0.1.md
+│   ├── woocommerce-theme-core-knowledge-v1.0.1.md
+│   └── wordpress-theme-plugin-reusable-code-v1.0.2.md
 └── assets/
     ├── css/
     │   └── style.css
@@ -64,6 +65,25 @@ wordpress-woocommerce-code-library/
 详细文档：
 
 [查看 Woo 商城主题核心知识点整理](docs/woocommerce-theme-core-knowledge-v1.0.1.md)
+
+## v1.0.2 核心文档
+
+本版本新增普通 WordPress 主题与小插件的可复用代码整理，来源于 `themes.zip` 和 `plugins.zip`。
+
+主要整理内容：
+
+- 普通 WordPress 主题 `mytheme` 的文件结构和职责边界
+- `functions.php` 中适合长期复用的后台增强、CPT、Taxonomy、Metabox、Ajax 和清理代码
+- 产品、下载资料、FAQ、Instagram 动态、VR 视频、经销商网络等自定义内容模型
+- 分类页 SEO 标题、页面说明、排序字段等 Term Meta 扩展思路
+- 自定义字段、媒体上传、多图图库、拖拽排序等后台字段模式
+- 联系表单、计算器结果、展会报名、经销商申请等 Ajax 邮件处理模板
+- `Page Settings` 小插件的 Settings API 实现方式
+- SMTP、邮箱、授权码等敏感信息的脱敏和安全维护建议
+
+详细文档：
+
+[查看 WordPress 常用主题与小插件可复用代码整理](docs/wordpress-theme-plugin-reusable-code-v1.0.2.md)
 
 ## 新增代码片段的方法
 
@@ -180,6 +200,15 @@ $admin_email = 'company@example.com';
 ```
 
 ## 更新记录
+
+### v1.0.2
+
+- 新增普通 WordPress 主题与小插件的可复用代码整理。
+- 新增 `docs/wordpress-theme-plugin-reusable-code-v1.0.2.md` 详细文档。
+- 从 `themes.zip` 中提炼普通主题常用文件结构、后台增强、自定义文章类型、分类字段、自定义字段、图库字段、Ajax 表单邮件和 WordPress 头部清理代码。
+- 从 `plugins.zip` 中提炼 `Page Settings` 后台设置小插件的 Settings API 模板。
+- 首页新增普通 WordPress 主题 / 插件相关代码卡片，方便后续搜索、复制和复用。
+- 对真实邮箱、SMTP 账号、SMTP 授权码、第三方追踪 ID 等内容进行脱敏处理，避免敏感信息进入公开仓库。
 
 ### v1.0.1
 
